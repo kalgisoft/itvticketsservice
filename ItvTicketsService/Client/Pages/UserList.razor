@@ -1,0 +1,251 @@
+﻿@page "/userlist"
+@inject IAuthService AuthService
+@inject IPlantService _plantService
+@inject IUserInfoService _userInfoService
+@inject IDialogService _dialogService
+
+
+<h1 style="text-align:center">Users List</h1>
+
+
+<MudDialog @bind-IsVisible="visible">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3" /> Error
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <p>@error</p>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit" Class="px-10">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<div class="container">
+    <main>
+
+        <div class="row g-5">
+            <p>@error</p>
+        </div>
+
+        <div class="row g-5">
+            <p>
+                <table id="search-add">
+                    <tr>
+                        <td>
+                            <label>Create User: </label>
+                            <MudLink Href="register">
+                                <MudIcon Icon="@Icons.Filled.PersonAdd" Color="Color.Primary" Title="New User" />
+                            </MudLink>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label>Home: </label>
+                            <MudLink Href="/">
+                                <MudIcon Icon="@Icons.Filled.Home" Color="Color.Primary" Title="Home" />
+                            </MudLink>
+                        </td>
+                    </tr>
+                </table>
+            </p>
+        </div>
+
+        <div class="row g-5">
+
+            @if (users == null)
+            {
+                <p style="text-align:center"><img src="../images/loader.gif" /></p>
+            }
+            else
+            {
+                <MudTable Items="@users" Hover="true" Breakpoint="Breakpoint.Sm" Loading="false">
+                    <HeaderContent>
+                        <MudTh>Id</MudTh>
+                        <MudTh>Name</MudTh>
+                        <MudTh>Change Role</MudTh>
+                        <MudTh>Change Password</MudTh>
+                        <MudTh>User Plants</MudTh>
+                        <MudTh>Role</MudTh>
+                        <MudTh>Delete</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Id">@context.Id</MudTd>
+                        <MudTd DataLabel="Name">@context.UserName</MudTd>
+                        <MudTd DataLabel="Change Role">
+                            <a href="/useraddeditrole/@context.Id">
+                                Change Role
+                            </a>
+                        </MudTd>
+                        <MudTd DataLabel="Change Password">
+                            <a href="/useraddeditpassword/@context.Id">
+                                Change Password
+                            </a>
+                        </MudTd>
+                        <MudTd DataLabel="Change Plants">
+                            <a href="/useraddeditplants/@context.Id">
+                                Manage Plants
+                            </a>
+                        </MudTd>
+                        <MudTd DataLabel="Role">
+                            @if (dictUserRole.ContainsKey(context.Id))
+                                @dictUserRole[context.Id]
+                        </MudTd>
+                        <MudTd DataLabel="Delete">
+                            <MudIconButton @onclick="@(() => Delete(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            }
+        </div>
+
+        <div class="row g-5">
+            <p></p>
+        </div>
+
+    </main>
+</div>
+
+
+
+<!--
+<table id="search-add">
+    <tr>
+        <td>
+            <div class="createuserlink">
+                <i class="fas fa-user-plus mr-1"></i>
+                <NavLink href="register">
+                    Create user
+                </NavLink>
+            </div>
+        </td>
+
+        <td>
+            <span class="oi oi-magnifying-glass" style="color:blue;"></span>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+
+<NavLink href="/">
+    Home
+</NavLink>
+        </td>
+    </tr>
+</table>
+
+<div id="list">
+    @if (users == null)
+    {
+        <p style="text-align:center">
+            <img src="../images/loader.gif" />
+        </p>
+    }
+    else
+    {
+        <table class="genlist">
+            <tr>
+                <td colspan="10" style="text-align:left;font-weight:bold;font-size:120%"></td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <th>Change Role</th>
+                <th>Change Password</th>
+                <th>Change Plants</th>
+                <th>User Plants</th>
+                <th>Role</th>
+                <th>Delete</th>
+            </tr>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>
+                        <a href="/useraddeditrole/@user.Id">
+                            Change Role
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/useraddeditpassword/@user.Id">
+                            Change Password
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/useraddeditplants/@user.Id">
+                            Change Plants
+                        </a>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        @if (dictUserRole.ContainsKey(user.Id))
+                            @dictUserRole[user.Id]
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+</div>
+-->
+
+@code {
+    private bool visible = false;
+    private string error = string.Empty;
+
+    // Create an empty list, named plants, of empty Plant objects.
+    List<Plant> plants;
+    private Dictionary<int, string> dictPlants = new Dictionary<int, string>();
+
+    List<UserInfo> users = new List<UserInfo>();
+    Dictionary<int, string> dictUserRole = new Dictionary<int, string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Dictionary<int, string> dictTmp = new Dictionary<int, string>();
+
+        List<UserInfo> users3 = await _userInfoService.GetUserList((int)RoleType.Client);
+        dictUserRole = users3.Distinct().ToDictionary(x => x.Id, x => "client");
+        users.AddRange(users3);
+
+        List<UserInfo> users2 = await _userInfoService.GetUserList((int)RoleType.Team);
+        dictTmp = users2.Distinct().ToDictionary(x => x.Id, x => "team");
+        //dictionaryFrom.ToList().ForEach(x => dictionaryTo.Add(x.Key, x.Value));
+        dictTmp.ToList().ForEach(x => dictUserRole.Add(x.Key, x.Value));
+        users.AddRange(users2);
+
+        List<UserInfo> users1 = await _userInfoService.GetUserList((int)RoleType.Admin);
+        dictTmp = users1.Distinct().ToDictionary(x => x.Id, x => "admin");
+        dictTmp.ToList().ForEach(x => dictUserRole.Add(x.Key, x.Value));
+        users.AddRange(users1);
+
+        UserInfo p = users[1];
+
+        //Populate the list of plant objects from the Plant table.
+        plants = await _plantService.GetPlantList();
+        dictPlants = plants.Distinct().ToDictionary(x => x.Id, x => x.Name);
+    }
+
+    protected async Task Delete(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", $"Not implemented.");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = _dialogService.Show<ItvModalDialog>("Delete", parameters, options);
+    }
+
+    private void OpenDialog() => visible = true;
+
+    void Submit()
+    {
+        error = string.Empty;
+        visible = false;
+    }
+}

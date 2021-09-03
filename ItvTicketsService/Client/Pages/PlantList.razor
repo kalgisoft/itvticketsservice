@@ -1,0 +1,259 @@
+﻿@page "/plantlist"
+@inject ICompanyService CompanyService
+@inject IPlantService PlantService
+@inject IDialogService _dialogService
+@inject NavigationManager NavigationManager
+
+<h1 style="text-align:center">Plant List</h1>
+
+
+<MudDialog @bind-IsVisible="visible">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3" /> Error
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <p>@error</p>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit" Class="px-10">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+<div class="container">
+    <main>
+
+        <div class="row g-5">
+            <p>@error</p>
+        </div>
+
+        <div class="row g-5">
+            <p>
+                <table id="search-add">
+                    <tr>
+                        <!-- Calling companyaddedit with Id of zero configures page for Insert -->
+                        <td>
+                            <MudLink Href="/plantaddedit/0">Add a Plant</MudLink>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <!-- Back home -->
+                            <MudLink Href="/">Home</MudLink>
+                        </td>
+                    </tr>
+                </table>
+            </p>
+        </div>
+
+        <div class="row g-5">
+
+            @if (plants == null)
+            {
+                <p style="text-align:center"><img src="../images/loader.gif" /></p>
+            }
+            else
+            {
+                <MudTable Items="@plants" Hover="true" Breakpoint="Breakpoint.Sm" Loading="false">
+                    <HeaderContent>
+                        <MudTh>Edit</MudTh>
+                        <MudTh>Id</MudTh>
+                        <MudTh>Name</MudTh>
+                        <MudTh>Street Address</MudTh>
+                        <MudTh>City</MudTh>
+                        <MudTh>State</MudTh>
+                        <MudTh>Zip Code</MudTh>
+                        <MudTh>Email</MudTh>
+                        <MudTh>Phone</MudTh>
+                        <MudTh>Owner Company</MudTh>
+                        <MudTh>Delete</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Edit">
+                            <a href="plantaddedit/@context.Id">
+                                <MudIcon Icon="@Icons.Filled.Edit" Color="Color.Primary" Title="Edit" />
+                            </a>
+                        </MudTd>
+                        <MudTd DataLabel="Id">@context.Id</MudTd>
+                        <MudTd DataLabel="Name">@context.Name</MudTd>
+                        <MudTd DataLabel="Street Address">@context.StreetAddress</MudTd>
+                        <MudTd DataLabel="City">@context.City</MudTd>
+                        <MudTd DataLabel="State">@context.State</MudTd>
+                        <MudTd DataLabel="Zip Code">@context.ZipCode</MudTd>
+                        <MudTd DataLabel="Email">@context.Email</MudTd>
+                        <MudTd DataLabel="Phone">@context.Phone</MudTd>
+                        <MudTd DataLabel="Owner">
+                            @if (@dictCompanies.ContainsKey(context.IdCompany))
+                                @dictCompanies[context.IdCompany]
+                        </MudTd>
+                        <MudTd DataLabel="Delete">
+                            <MudIconButton @onclick="@(() => Delete(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            }
+        </div>
+
+        <div class="row g-5">
+            <p></p>
+        </div>
+
+    </main>
+</div>
+
+
+<!--
+
+<table id="search-add">
+    <tr>
+        <td>
+
+<a href="/plantaddedit/0"><span class="oi oi-plus"></span>Add a Plant</a>
+        </td>
+<td>
+    <span class="oi oi-magnifying-glass" style="color:blue;"></span>
+</td>
+    </tr>
+
+<tr>
+    <td>
+
+        <a href="/"><span class="oi oi-plus"></span>Home</a>
+    </td>
+</tr>
+</table>
+
+<div id="list">
+    @if (plants == null)
+    {
+        <p style="text-align:center">
+            <img src="../images/loader.gif" />
+        </p>
+    }
+    else
+    {
+        <table class="genlist">
+            <tr>
+                <td colspan="10" style="text-align:left;font-weight:bold;font-size:120%"></td>
+            </tr>
+            <tr>
+                <th>Edit</th>
+                <th>Name</th>
+                <th>StreetAddress</th>
+                <th>City</th>
+                <th>State</th>
+                <th>ZipCode</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Owner Company</th>
+                <th>Delete</th>
+            </tr>
+            @foreach (var plant in plants)
+            {
+                <tr>
+                    <td>
+                        <a href="plantaddedit/@plant.Id">
+                            <span class="oi oi-pencil" style="color:blue;"></span>
+                            <img src="../images/iEdit.png" />
+                        </a>
+                    </td>
+                    <td>@plant.Name</td>
+                    <td>@plant.StreetAddress</td>
+                    <td>@plant.City</td>
+                    <td>@plant.State</td>
+                    <td>@plant.ZipCode</td>
+                    <td>@plant.Email</td>
+                    <td>@plant.Phone</td>
+                    <td>
+                        @if (@dictCompanies.ContainsKey(plant.IdCompany))
+                            @dictCompanies[plant.IdCompany]
+                    </td>
+
+                    <td>
+
+                        <a href="plantdelete/@plant.Id">
+
+                            <span class="oi oi-trash" style="color:red;"></span>
+                            <img src="../images/iTrash.png" alt="Delete" title="Delete" />
+                        </a>
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+</div>
+-->
+
+
+
+@code {
+    private bool visible = false;
+    private string error = string.Empty;
+
+    Dictionary<int, string> dictCompanies = new Dictionary<int, string>();
+
+    // Create an empty list, named plants, of empty Plant objects.
+    List<Plant> plants;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Populate the list of plant objects from the Plant table.
+        plants = await PlantService.GetPlantList();
+
+        foreach (var pl in plants)
+        {
+            if (pl.IdCompany != 0)
+            {
+                var cmp = await CompanyService.Company_GetOne(pl.IdCompany);
+
+                if (!dictCompanies.ContainsKey(pl.IdCompany))
+                    dictCompanies.Add(pl.IdCompany, cmp.Name);
+            }
+        }
+    }
+
+    //Executes if user confirms the deletion.
+    protected async Task Delete(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", $"Do you really want to delete plant id={ id }? This process cannot be undone.");
+        parameters.Add("ButtonText", "Delete");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = _dialogService.Show<ItvModalDialog>("Delete", parameters, options);
+
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            try
+            {
+                // Delete the row and go back to the list.
+                // In the SProc you can set IsActive to 0 rather than physically delete.
+                await PlantService.PlantDelete(id);
+
+                //reload
+                await OnInitializedAsync();
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                OpenDialog();
+            }
+        }
+    }
+
+    private void OpenDialog() => visible = true;
+
+    void Submit()
+    {
+        error = string.Empty;
+        visible = false;
+    }
+
+}

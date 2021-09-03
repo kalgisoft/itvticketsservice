@@ -1,0 +1,100 @@
+﻿@page "/register"
+@layout AuthLayout
+@inject NavigationManager navigationManager
+@inject CustomStateProvider authStateProvider
+@inject IPlantService PlantService
+
+<AuthorizeView Roles="Admin">
+    <Authorized Context="Register">
+        <div class="col-lg-7">
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-header"><h3 class="text-center font-weight-light my-2">Create Account</h3></div>
+                <div class="card-body">
+                    <EditForm class="form-register form-horizontal" OnValidSubmit="OnSubmit" Model="registerRequest">
+                        <DataAnnotationsValidator />
+                        <label class="text-danger">@error</label>
+
+                        <div class="form-group">
+                            <label class="small mb-1" for="inputEmailAddress">User Name</label>
+                            <InputText id="inputUsername" class="form-control py-4" placeholder="User name" autofocus @bind-Value="@registerRequest.UserName" />
+                            <ValidationMessage For="@(() => registerRequest.UserName)" />
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="small mb-1" for="inputPassword">Password</label>
+                                    <InputText type="password" id="inputPassword" class="form-control py-4" placeholder="Password" @bind-Value="@registerRequest.Password" />
+                                    <ValidationMessage For="@(() => registerRequest.Password)" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="small mb-1" for="inputPasswordConfirm">Password Confirmation</label>
+                                    <InputText type="password" id="inputPasswordConfirm" class="form-control py-4" placeholder="Password Confirmation" @bind-Value="@registerRequest.PasswordConfirm" />
+                                    <ValidationMessage For="@(() => registerRequest.PasswordConfirm)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @if (plants != null)
+                            {
+                                <select class="form-control selectpicker" @bind="registerRequest.PlantId">
+                                    <option>--select plant--</option>
+                                    @foreach (var pl in plants)
+                                    {
+                                        <option value="@pl.Id">@pl.Name</option>
+                                    }
+                                </select>
+
+                                <ValidationMessage For="@(() => registerRequest.PlantId)" />
+                            }
+                        </div>
+
+                        <div class="form-group mt-4 mb-0">
+                            <button class="btn btn-primary btn-block" type="submit">Create account</button>
+                        </div>
+                    </EditForm>
+                </div>
+                <div class="card-footer text-center">
+                    <div class="small"><a href="/">Back to tickets history</a></div>
+                </div>
+            </div>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+
+@code {
+    // Create an empty list, named plants, of empty Plant objects.
+    List<Plant> plants;
+
+    /// <summary>
+    /// registration model
+    /// </summary>
+    RegisterRequest registerRequest { get; set; } = new RegisterRequest();
+    string error { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Populate the list of plant objects from the Plant table.
+        plants = await PlantService.GetPlantList();
+    }
+
+    /// <summary>
+    /// Valdiates user and register new user. takes user details as input.
+    /// </summary>
+    /// <returns></returns>
+    async Task OnSubmit()
+    {
+        try
+        {
+            await authStateProvider.Register(registerRequest);
+            error = "User registered successfully.";
+            navigationManager.NavigateTo("/register");
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+}

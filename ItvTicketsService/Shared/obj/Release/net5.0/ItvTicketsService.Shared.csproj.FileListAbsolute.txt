@@ -1,0 +1,12 @@
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Shared\bin\Release\net5.0\ItvTicketsService.Shared.deps.json
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Shared\bin\Release\net5.0\ItvTicketsService.Shared.dll
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Shared\bin\Release\net5.0\ref\ItvTicketsService.Shared.dll
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Shared\bin\Release\net5.0\ItvTicketsService.Shared.pdb
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Shared\obj\Release\net5.0\ItvTicketsService.Shared.csproj.AssemblyReference.cache
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Shared\obj\Release\net5.0\ItvTicketsService.Shared.GeneratedMSBuildEditorConfig.editorconfig
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Shared\obj\Release\net5.0\ItvTicketsService.Shared.AssemblyInfoInputs.cache
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Shared\obj\Release\net5.0\ItvTicketsService.Shared.AssemblyInfo.cs
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Shared\obj\Release\net5.0\ItvTicketsService.Shared.csproj.CoreCompileInputs.cache
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Shared\obj\Release\net5.0\ItvTicketsService.Shared.dll
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Shared\obj\Release\net5.0\ref\ItvTicketsService.Shared.dll
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Shared\obj\Release\net5.0\ItvTicketsService.Shared.pdb

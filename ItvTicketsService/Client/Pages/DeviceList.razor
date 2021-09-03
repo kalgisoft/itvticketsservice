@@ -1,0 +1,255 @@
+﻿@page "/devicelist"
+@inject IPlantService PlantService
+@inject IContractorsService ContractorsService
+@inject IDeviceService DeviceService
+@inject IDialogService _dialogService
+
+<h1 style="text-align:center">Device List</h1>
+
+
+<MudDialog @bind-IsVisible="visible">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3" /> Error
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <p>@error</p>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit" Class="px-10">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<div class="container">
+    <main>
+
+        <div class="row g-5">
+            <p>@error</p>
+        </div>
+
+        <div class="row g-5">
+            <p>
+                <table id="search-add">
+                    <tr>
+                        <td>
+                            <MudLink Href="/deviceaddedit/0">Add a Device</MudLink>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <!-- Back home -->
+                            <MudLink Href="/">Home</MudLink>
+                        </td>
+                    </tr>
+                </table>
+            </p>
+        </div>
+
+        <div class="row g-5">
+
+            @if (devices == null)
+            {
+                <p style="text-align:center"><img src="../images/loader.gif" /></p>
+            }
+            else
+            {
+                <MudTable Items="@devices" Hover="true" Breakpoint="Breakpoint.Sm" Loading="false">
+                    <HeaderContent>
+                        <MudTh>Edit</MudTh>
+                        <MudTh>Id</MudTh>
+                        <MudTh>Code</MudTh>
+                        <MudTh>Type</MudTh>
+                        <MudTh>Info</MudTh>
+                        <MudTh>Plant Owner</MudTh>
+                        <MudTh>Line Num</MudTh>
+                        <MudTh>Contractor Name</MudTh>
+                        <MudTh>Delete</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Edit">
+                            <a href="deviceaddedit/@context.Id">
+                                <MudIcon Icon="@Icons.Filled.Edit" Color="Color.Primary" Title="Edit" />
+                            </a>
+                        </MudTd>
+                        <MudTd DataLabel="Id">@context.Id</MudTd>
+                        <MudTd DataLabel="Code">@context.Code</MudTd>
+                        <MudTd DataLabel="Type">@context.Type</MudTd>
+                        <MudTd DataLabel="Info">@context.Info</MudTd>
+                        <MudTd DataLabel="Plant Owner">
+                            @if (@dictPlants.ContainsKey(context.PlantId))
+                                @dictPlants[context.PlantId]
+                        </MudTd>
+                        <MudTd DataLabel="Line Num">@context.NumLinea</MudTd>
+                        <MudTd DataLabel="Contractor">
+                            @if (dictContractors.ContainsKey(context.IdContractor))
+                                @dictContractors[context.IdContractor]
+                        </MudTd>
+                        <MudTd DataLabel="Delete">
+                            <MudIconButton @onclick="@(() => Delete(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            }
+        </div>
+
+        <div class="row g-5">
+            <p></p>
+        </div>
+
+    </main>
+</div>
+
+
+<!--
+
+<table id="search-add">
+    <tr>
+        <td>
+            <a href="/deviceaddedit/0"><span class="oi oi-plus"></span>Add a Device</a>
+        </td>
+        <td>
+            <span class="oi oi-magnifying-glass" style="color:blue;"></span>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <a href="/"><span class="oi oi-plus"></span>Home</a>
+        </td>
+    </tr>
+</table>
+
+<div id="list">
+    @if (devices == null)
+    {
+        <p style="text-align:center">
+            <img src="../images/loader.gif" />
+        </p>
+    }
+    else
+    {
+        <table class="genlist">
+            <tr>
+                <td colspan="10" style="text-align:left;font-weight:bold;font-size:120%"></td>
+            </tr>
+            <tr>
+                <th>Edit</th>
+                <th>Code</th>
+                <th>Type</th>
+                <th>Info</th>
+                <th>Plant Owner</th>
+                <th>Line Num</th>
+                <th>Contractor Name</th>
+                <th>Delete</th>
+            </tr>
+            @foreach (var dev in devices)
+            {
+                <tr>
+                    <td>
+
+<a href="deviceaddedit/@dev.Id">
+    <span class="oi oi-pencil" style="color:blue;"></span>
+    <img src="../images/iEdit.png" />
+</a>
+                    </td>
+<td>@dev.Code</td>
+<td>@dev.Type</td>
+<td>@dev.Info</td>
+<td>
+    @if (@dictPlants.ContainsKey(dev.PlantId))
+        @dictPlants[dev.PlantId]
+</td>
+<td>@dev.NumLinea</td>
+<td>
+    @if (dictContractors.ContainsKey(dev.IdContractor))
+        @dictContractors[dev.IdContractor]
+</td>
+<td>
+    <a href="devicedelete/@dev.Id">
+        <span class="oi oi-trash" style="color:red;"></span>
+        <img src="../images/iTrash.png" alt="Delete" title="Delete" />
+    </a>
+</td>
+                </tr>
+}
+        </table>
+}
+</div>
+
+
+-->
+
+
+@code {
+    Dictionary<int, string> dictPlants = new Dictionary<int, string>();
+    Dictionary<int, string> dictContractors = new Dictionary<int, string>();
+
+    List<Device> devices;
+    List<Contractor> contractors;
+
+    private bool visible = false;
+    private string error = string.Empty;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Populate the list of devices objects from the Devices table.
+        devices = await DeviceService.GetDeviceList();
+        contractors = await ContractorsService.GetContractorsList();
+
+        //in futuro si puo fare una vista sul database...
+        foreach (var dev in devices)
+        {
+            if (dev.PlantId != 0)
+            {
+                var cmp = await PlantService.Plant_GetOne(dev.PlantId);
+
+                if (!dictPlants.ContainsKey(dev.PlantId))
+                    dictPlants.Add(dev.PlantId, cmp.Name);
+            }
+        }
+
+        dictContractors = contractors.Distinct().ToDictionary(x => x.Id, x => x.Name);
+    }
+
+    //Executes if user confirms the deletion.
+    protected async Task Delete(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", $"Do you really want to delete device id={ id }? This process cannot be undone.");
+        parameters.Add("ButtonText", "Delete");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = _dialogService.Show<ItvModalDialog>("Delete", parameters, options);
+
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            try
+            {
+                await DeviceService.DeviceDelete(id);
+
+                //reload
+                await OnInitializedAsync();
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                OpenDialog();
+            }
+        }
+    }
+
+    private void OpenDialog() => visible = true;
+
+    void Submit()
+    {
+        error = string.Empty;
+        visible = false;
+    }
+}

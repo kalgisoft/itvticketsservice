@@ -1,0 +1,60 @@
+﻿@inherits Index
+@inject ITicketService _ticketService
+
+<div class="col-sm-12">
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Search Tickets by Client:
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <select class="form-control selectpicker" @bind="@SelectedClientId">
+                                    @if (users != null)
+                                    {
+                                        <option value="0">--select all--</option>
+                                        @foreach (var cl in users)
+                                        {
+                                            <option value="@cl.Id">@cl.UserName</option>
+                                        }
+                                    }
+                                </select>
+                            </td>
+
+                            <td>
+                                <button class="btn btn-primary btn-block" @onclick="Filter">Search</button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<bool> OnRefreshParent { get; set; }
+
+    async Task Filter()
+    {
+ 
+        if (SelectedClientId==0)
+        {
+            await _ticketService.Load();
+        }
+        else
+        {
+            await _ticketService.LoadByClientId(SelectedClientId);
+        }
+
+        //per refresh
+        await OnRefreshParent.InvokeAsync(true);
+    }
+
+}

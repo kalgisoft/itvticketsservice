@@ -1,0 +1,39 @@
+﻿** In evidenza
+     Tabelle che verranno ricompilate
+       Nessuno
+     Indici cluster che verranno eliminati
+       Nessuno
+     Indici cluster che verranno creati
+       Nessuno
+     Possibili problemi di dati
+       Nessuno
+
+** Azioni utente
+     Modifica
+       [dbo].[Devices] (Tabella)
+       [dbo].[spDevice_GetOne] (Routine)
+       [dbo].[spDevice_Insert] (Routine)
+       [dbo].[spDevice_List] (Routine)
+       [dbo].[spDevice_Update] (Routine)
+     Crea
+       [dbo].[Contractors] (Tabella)
+       [dbo].[PlantsToClient] (Tabella)
+       [dbo].[FK_PlantsToClient_ToApplicationUser] (Chiave esterna)
+       [dbo].[FK_PlantsToClient_ToPlant] (Chiave esterna)
+       [dbo].[FK_Devices_Contractors] (Chiave esterna)
+       [dbo].[spApplicationUserRole_ChangeRole] (Routine)
+       [dbo].[spContractors_Delete] (Routine)
+       [dbo].[spContractors_GetOne] (Routine)
+       [dbo].[spContractors_Insert] (Routine)
+       [dbo].[spContractors_List] (Routine)
+       [dbo].[spContractors_Update] (Routine)
+       [dbo].[spPlantsToClient_Delete] (Routine)
+       [dbo].[spPlantsToClient_DeleteAll] (Routine)
+       [dbo].[spPlantsToClient_ListPlants] (Routine)
+       [dbo].[spPlantsToClient_Upsert] (Routine)
+       [dbo].[spUsers_GetOne] (Routine)
+       [dbo].[spUsers_GetRole] (Routine)
+
+** Azioni di supporto
+     Aggiorna
+       [dbo].[spDevice_Delete] (Routine)

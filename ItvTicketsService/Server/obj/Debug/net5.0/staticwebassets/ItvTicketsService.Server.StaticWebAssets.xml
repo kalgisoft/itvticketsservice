@@ -1,0 +1,6 @@
+﻿<StaticWebAssets Version="1.0">
+  <ContentRoot BasePath="/" Path="C:\Users\sachi\Source\Repos\itvticketsservice\ItvTicketsService\Client\bin\Debug\net5.0\wwwroot\" />
+  <ContentRoot BasePath="/" Path="C:\Users\sachi\Source\Repos\itvticketsservice\ItvTicketsService\Client\wwwroot\" />
+  <ContentRoot BasePath="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication" Path="C:\Users\sachi\.nuget\packages\microsoft.aspnetcore.components.webassembly.authentication\5.0.8\build\..\staticwebassets\" />
+  <ContentRoot BasePath="_content/MudBlazor" Path="C:\Users\sachi\.nuget\packages\mudblazor\5.1.0\build\..\staticwebassets\" />
+</StaticWebAssets>

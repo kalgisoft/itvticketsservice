@@ -1,0 +1,180 @@
+﻿@page "/ticketaddedit/{Id:int}"
+
+@inject ITicketService _ticketService
+@inject IUserInfoService _userinfoService
+@inject NavigationManager NavigationManager
+
+<h1 style="text-align:center">@pagetitle</h1>
+
+<EditForm Model="@ticket" OnValidSubmit="@Save" class="form-inline">
+    <div class="container">
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Client: </label>
+            </div>
+            <div class='col-4'>
+                @clientName
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Team: </label>
+            </div>
+            <div class='col-4'>
+                @teamName
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Closer User: </label>
+            </div>
+            <div class='col-4'>
+                @closerName
+            </div>
+        </div>
+
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Created Date: </label>
+            </div>
+            <div class='col-4'>
+                @ticket.CreatedDate.ToString()
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Open Date: </label>
+            </div>
+            <div class='col-4'>
+                @ticket.OpenDate.ToString()
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Close Date: </label>
+            </div>
+            <div class='col-4'>
+                @ticket.CloseDate.ToString()
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Team memo:</label>
+            </div>
+            <div class='col-4'>
+                <InputTextArea @bind-Value="ticket.TeamMemo" class='form-control' id='Code' />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 errormsg">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 buttons">
+                <button class="btn btn-primary" @onsubmit="@Save">@buttontext</button>
+                <button class="btn btn-secondary" @onclick="@Cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+
+    // Create a new, empty Device object
+    Tickets ticket = new Tickets();
+
+    [Parameter]
+    public int Id { get; set; }
+
+    // Set default page title and button text
+    public string pagetitle = "Add a Ticket";
+    public string buttontext = "Add";
+
+    private List<UserInfo> users = new List<UserInfo>();
+    private List<UserInfo> users3;
+    private List<UserInfo> users2;
+    private List<UserInfo> users1;
+
+    private Dictionary<int, string> dictClients = new Dictionary<int, string>();
+
+
+    public string clientName = string.Empty;
+    public string closerName = string.Empty;
+    public string teamName = string.Empty;
+
+
+    //Executes on page open, set defaults on page.
+    protected override async Task OnInitializedAsync()
+    {
+        users3 = await _userinfoService.GetUserList((int)RoleType.Client);
+        users.AddRange(users3);
+
+        users2 = await _userinfoService.GetUserList((int)RoleType.Team);
+        users.AddRange(users2);
+
+        users1 = await _userinfoService.GetUserList((int)RoleType.Admin);
+        users.AddRange(users1);
+
+        dictClients = users.Distinct().ToDictionary(x => x.Id, x => x.UserName);
+
+        // ============ If the passed-in Id is zero, assume new Ticket.
+        if (Id == 0)
+        {
+            // Use this block to set for defaults (optional)
+        }
+        else
+        {
+            ticket = await _ticketService.GetTicketsById(Id);
+
+            // Change page title and button text since this is an edit.
+            pagetitle = "Edit Ticket";
+            buttontext = "Update";
+
+            if (dictClients.ContainsKey(ticket.ClientId))
+            {
+                clientName = dictClients[ticket.ClientId];
+            }
+
+            if (dictClients.ContainsKey(ticket.CloserId))
+            {
+                closerName = dictClients[ticket.CloserId];
+            }
+
+            if (dictClients.ContainsKey(ticket.TeamId))
+            {
+                teamName = dictClients[ticket.TeamId];
+            }
+        }
+    }
+
+    // Executes OnValidSubmit of EditForm above.
+    protected async Task Save()
+    {
+        if (ticket.TicketId == 0)
+        {
+        }
+        else
+        {
+            // Update if Id not 0
+            await _ticketService.UpdateTicket(ticket, false);
+        }
+        NavigationManager.NavigateTo("/");
+    }
+
+    //Executes if user clicks the Cancel button.
+    protected void Cancel()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

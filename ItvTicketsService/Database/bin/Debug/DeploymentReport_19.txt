@@ -1,0 +1,15 @@
+﻿** In evidenza
+     Tabelle che verranno ricompilate
+       Nessuno
+     Indici cluster che verranno eliminati
+       Nessuno
+     Indici cluster che verranno creati
+       Nessuno
+     Possibili problemi di dati
+       Nessuno
+
+** Azioni utente
+     Crea
+       [dbo].[spDeviceInfo_Upsert] (Routine)
+
+** Azioni di supporto

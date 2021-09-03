@@ -1,0 +1,39 @@
+﻿@page "/logslist"
+@inject ILogsService _logsService
+
+<h3>Application Logs</h3>
+
+<MudTable Items="@logs" Hover="true" SortLabel="Sort By" FixedHeader="true" Breakpoint="Breakpoint.Sm" Loading="false">
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<Log, object>(x=>x.CreatedDate)" InitialDirection="SortDirection.Descending">CreateDate</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Log, object>(x=>x.UserId)" InitialDirection="SortDirection.Descending">UserId</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Log, object>(x=>x.LogLevel)" InitialDirection="SortDirection.Descending">Log Level</MudTableSortLabel></MudTh>
+        <MudTh>Event Name</MudTh>
+        <MudTh>Source</MudTh>
+        <MudTh>Exception Message</MudTh>
+        <MudTh>Stack Trace</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="CreatedDate">@context.CreatedDate</MudTd>
+        <MudTd DataLabel="UserId">@context.UserId</MudTd>
+        <MudTd DataLabel="LogLevel">@context.LogLevel</MudTd>
+        <MudTd DataLabel="EventName">@context.EventName</MudTd>
+        <MudTd DataLabel="Source">@context.Source</MudTd>
+        <MudTd DataLabel="ExceptionMessage">@context.ExceptionMessage</MudTd>
+        <MudTd DataLabel="StackTrace">@context.StackTrace</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+    </PagerContent>
+</MudTable>
+
+
+@code {
+    List<Log> logs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        logs = await _logsService.GetLogList();
+        int kk = 0;
+    }
+}

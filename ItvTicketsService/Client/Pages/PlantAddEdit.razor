@@ -1,0 +1,156 @@
+﻿@page "/plantaddedit/{Id:int}"
+@inject ICompanyService CompanyService
+@inject IPlantService PlantService
+@inject NavigationManager NavigationManager
+
+<h1 style="text-align:center">@pagetitle</h1>
+
+<EditForm Model="@plant" OnValidSubmit="@Save" class="form-inline">
+    <div class="container">
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>Name:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="plant.Name" class='form-control' id='Name' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>Street Adress:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="plant.StreetAddress" class='form-control' id='Street' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>City:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="plant.City" class='form-control' id='City' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>State:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="plant.State" class='form-control' id='State' />
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>Zip Code:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="plant.ZipCode" class='form-control' id='ZipCode' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>Email:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="plant.Email" class='form-control' id='Email' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>Phone:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="plant.Phone" class='form-control' id='Phone' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>Owner Company:</label>
+            </div>
+            <div class='col-4'>
+                <select class="form-control selectpicker" @bind="plant.IdCompany">
+                    <option>--select company--</option>
+                    @foreach (var cmp in companies)
+                    {
+                        <option value="@cmp.Id">@cmp.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 errormsg">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 buttons">
+                <button class="btn btn-primary" @onsubmit="@Save">@buttontext</button>
+                <button class="btn btn-secondary" @onclick="@Cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    List<Company> companies = new List<Company>();
+
+    // Create a new, empty Plant object
+    Plant plant = new Plant();
+
+    [Parameter]
+    public int Id { get; set; }
+
+    // Set default page title and button text
+    public string pagetitle = "Add a Plant";
+    public string buttontext = "Add";
+
+    //Executes on page open, set defaults on page.
+    protected override async Task OnInitializedAsync()
+    {
+        companies = await CompanyService.GetCompanyList();
+
+        // ============ If the passed-in Id is zero, assume new Plant.
+        if (Id == 0)
+        {
+            // Use this block to set for defaults (optional)
+        }
+        else
+        {
+            plant = await PlantService.Plant_GetOne(Id);
+            // Change page title and button text since this is an edit.
+            pagetitle = "Edit Plant";
+            buttontext = "Update";
+        }
+    }
+    // Executes OnValidSubmit of EditForm above.
+    protected async Task Save()
+    {
+        if (plant.Id == 0)
+        {
+            // Insert if Id is zero.
+            await PlantService.PlantInsert(plant);
+        }
+        else
+        {
+            // Update if Id not 0
+            await PlantService.PlantUpdate(plant);
+        }
+        NavigationManager.NavigateTo("/plantlist");
+    }
+
+    //Executes if user clicks the Cancel button.
+    protected void Cancel()
+    {
+        NavigationManager.NavigateTo("/plantlist");
+    }
+}

@@ -1,0 +1,32 @@
+﻿** In evidenza
+     Tabelle che verranno ricompilate
+       [dbo].[Tickets]
+     Indici cluster che verranno eliminati
+       Nessuno
+     Indici cluster che verranno creati
+       Nessuno
+     Possibili problemi di dati
+       La colonna [dbo].[Tickets].[CompanyName] viene eliminata. Possibile perdita dati.
+       La colonna [dbo].[Tickets].[EndDate] viene eliminata. Possibile perdita dati.
+       La colonna [dbo].[Tickets].[OpenerId] viene eliminata. Possibile perdita dati.
+       La colonna [dbo].[Tickets].[UserId] viene eliminata. Possibile perdita dati.
+
+** Azioni utente
+     Ricompilazione tabella
+       [dbo].[Tickets] (Tabella)
+     Crea
+       [dbo].[FK_Tickets_ToApplicationUserClient] (Chiave esterna)
+       [dbo].[FK_Tickets_ToApplicationUserTeam] (Chiave esterna)
+       [dbo].[FK_Tickets_ToDevices] (Chiave esterna)
+
+** Azioni di supporto
+     Elimina
+       [dbo].[FK__Tickets__TicketStatusMaster] (Chiave esterna)
+     Crea
+       [dbo].[FK__Tickets__TicketStatusMaster] (Chiave esterna)
+
+La colonna [dbo].[Tickets].[CompanyName] viene eliminata. Possibile perdita dati.
+La colonna [dbo].[Tickets].[EndDate] viene eliminata. Possibile perdita dati.
+La colonna [dbo].[Tickets].[OpenerId] viene eliminata. Possibile perdita dati.
+La colonna [dbo].[Tickets].[UserId] viene eliminata. Possibile perdita dati.
+

@@ -1,0 +1,193 @@
+﻿@page "/useraddeditplants/{Id:int}"
+@inject IUserInfoService _userInfoService
+@inject IPlantService _plantService
+
+@inject NavigationManager NavigationManager
+
+<h1 style="text-align:center">@pagetitle</h1>
+
+
+<div class="container">
+    <div class='row'>
+        <div class='col-2'>
+            <select class="form-control selectpicker" @bind="selPlant">
+                <option>--select plant--</option>
+                @if (plants != null)
+                {
+                    foreach (var pl in plants)
+                    {
+                        <option value="@pl.Id">@pl.Name</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class='col-4'>
+            <button class="btn btn-primary" @onclick="@AddSelection">Add Plant</button>
+        </div>
+    </div>
+
+    <br />
+    <br />
+
+    <EditForm Model="@user" OnValidSubmit="@Save" class="form-inline">
+        <div class="row">
+            <div class="col-12 errormsg">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 buttons">
+                <button class="btn btn-primary" @onsubmit="@Save">@buttontext</button>
+                <button class="btn btn-secondary" @onclick="@Cancel">Cancel</button>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+<br />
+<br />
+
+<div id="list">
+    @if (plants == null)
+    {
+        <p style="text-align:center">
+            <img src="../images/loader.gif" />
+        </p>
+    }
+    else
+    {
+        <MudTable Items="@tmpUserPlants" Hover="true" Breakpoint="Breakpoint.Sm" Loading="false">
+            <HeaderContent>
+                <MudTh>Id</MudTh>
+                <MudTh>Name</MudTh>
+                <MudTh>Delete</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Id">@context</MudTd>
+                <MudTd DataLabel="Name">
+                    @if (@dictPlants.ContainsKey(context))
+                        @dictPlants[context]
+                 </MudTd>
+                <MudTd DataLabel="Delete">
+                    <MudIconButton @onclick="@(() => RemovePlant(context))" Icon="@Icons.Material.Filled.Delete" aria-label="Remove">Remove</MudIconButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+
+        <!--
+
+
+        <table class="genlist">
+            <tr>
+                <td colspan="10" style="text-align:left;font-weight:bold;font-size:120%"></td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Delete</th>
+            </tr>
+            @foreach (var plant in plants)
+            {
+                @if (tmpUserPlants.Contains(plant.Id))
+                {
+                    <tr>
+                        <td>@plant.Id</td>
+                        <td>@plant.Name</td>
+                        <td>
+                            <span class="oi oi-trash" style="color:red;"></span>
+                            <button class="btn btn-primary" @onclick="@(() => RemovePlant(plant.Id))">Remove</button>
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+
+            -->
+
+    }
+</div>
+
+
+@code {
+    UserInfo user = new UserInfo();
+    int selPlant;
+    List<Plant> plants;
+
+    public Dictionary<int, string> dictPlants = new Dictionary<int, string>();
+
+    HashSet<int> tmpUserPlants = new HashSet<int>();
+
+    [Parameter]
+    public int Id { get; set; }
+
+    // Set default page title and button text
+    public string pagetitle = "Change User Plants";
+    public string buttontext = "Change";
+
+    //Executes on page open, set defaults on page.
+    protected override async Task OnInitializedAsync()
+    {
+        plants = await _plantService.GetPlantList();
+        dictPlants = plants.Distinct().ToDictionary(x => x.Id, x => x.Name);
+
+        // ============ If the passed-in Id is zero, assume new Plant.
+        if (Id == 0)
+        {
+            // Use this block to set for defaults (optional)
+        }
+        else
+        {
+            user = await _userInfoService.UserInfo_GetOne(Id);
+
+            foreach (int plid in user.Plants)
+            {
+                tmpUserPlants.Add(plid);
+            }
+
+            // Change page title and button text since this is an edit.
+            pagetitle = $"Change {user.UserName} Plants";
+            buttontext = "Save";
+        }
+    }
+
+    // Executes OnValidSubmit of EditForm above.
+    protected async Task Save()
+    {
+        //remove client plants from table
+        await _userInfoService.UserInfo_DeleteAll(Id);
+
+
+        //add user plants to table
+        foreach (var itm in tmpUserPlants)
+        {
+            await _userInfoService.UserInfo_Upsert(Id, itm);
+        }
+
+        NavigationManager.NavigateTo("/userlist");
+    }
+
+    //Executes if user clicks the Cancel button.
+    protected void Cancel()
+    {
+        NavigationManager.NavigateTo("/userlist");
+    }
+
+    protected void AddSelection()
+    {
+        tmpUserPlants.Add(selPlant);
+
+        //aggiornare
+        StateHasChanged();
+    }
+
+    protected void RemovePlant(int id)
+    {
+        tmpUserPlants.Remove(id);
+
+        //aggiornare
+        StateHasChanged();
+    }
+}

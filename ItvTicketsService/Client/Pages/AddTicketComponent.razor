@@ -1,0 +1,106 @@
+﻿@inherits Index
+@inject ITicketService _ticketService
+
+<div class="col-sm-12">
+    <div class="card mb-4">
+        <div class="card-header">
+            <div style="float:left">
+                <i class="fas fa-plus-square mr-1"></i>
+                Add ticket
+            </div>
+        </div>
+
+        <div class="card-body">
+            <EditForm Context="AddTicket" class="form-Ticket form-horizontal" OnValidSubmit="OnMySubmit" Model="_ticketService.TickettoInsert">
+                <DataAnnotationsValidator />
+                <label class="text-danger">@error</label>
+
+                <div class="form-row">
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="small mb-1" for="inputClient">Client</label>
+                            <select class="form-control selectpicker" @onchange="@BuildUserPlants">
+                                @if (users != null)
+                                {
+                                    <option value="-1">--select client--</option>
+                                    @foreach (var user in users)
+                                    {
+                                        <option value="@user.Id">@user.UserName</option>
+                                    }
+                                }
+                            </select>
+                            <ValidationMessage For="@(() => _ticketService.TickettoInsert.ClientId)" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="small mb-1" for="inputCompanyName">Select Plant</label>
+                            <select class="form-control selectpicker" @onchange="@BuildPlantDevices">
+                                @if (userPlants != null)
+                                {
+                                    <option value="-1">--select plant--</option>
+                                    @foreach (var idpl in userPlants)
+                                    {
+                                        <option value="@idpl">
+                                            @if (dictPlants.ContainsKey(idpl))
+                                                @dictPlants[idpl]
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="small mb-1" for="inputDevice">Device</label>
+                            <select class="form-control selectpicker" @bind="_ticketService.TickettoInsert.DeviceId">
+                                @if (plantDevices != null)
+                                {
+                                    <option value="-1">--select device--</option>
+                                    @foreach (var dv in plantDevices)
+                                    {
+                                        <option value="@dv.Id">@dv.Code</option>
+                                    }
+                                }
+                            </select>
+                            <ValidationMessage For="@(() => _ticketService.TickettoInsert.DeviceId)" />
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="small mb-1" for="inputReason">Reason</label>
+                            <InputText id="inputReason" class="form-control" @bind-Value="_ticketService.TickettoInsert.Reason" autofocus placeholder="Reason" />
+                            <ValidationMessage For="@(() => _ticketService.TickettoInsert.Reason)" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                            <button class="btn btn-primary" type="submit">Create Ticket</button>
+                        </div>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback<bool> OnRefreshParent { get; set; }
+
+    async Task OnMySubmit()
+    {
+
+        //per refresh
+        await OnRefreshParent.InvokeAsync(true);
+    }
+
+}

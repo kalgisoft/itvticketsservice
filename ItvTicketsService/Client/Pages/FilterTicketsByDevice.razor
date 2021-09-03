@@ -1,0 +1,61 @@
+﻿@inherits Index
+@inject ITicketService _ticketService
+
+<div class="col-sm-12">
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Search Tickets by Device:
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <select class="form-control selectpicker" @bind="@SelectedDevice">
+                                    @if (devices != null)
+                                    {
+                                        <option>--select all--</option>
+                                        @foreach (var dv in devices)
+                                        {
+                                            <option>@dv.Code</option>
+                                        }
+                                    }
+                                </select>
+                            </td>
+
+                            <td>
+                                <button class="btn btn-primary btn-block" @onclick="Filter">Search</button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback<bool> OnRefreshParent { get; set; }
+
+    async Task Filter()
+    {
+        if (string.IsNullOrEmpty(SelectedDevice)) return;
+
+        if (SelectedDevice.Equals("--select all--"))
+        {
+            await _ticketService.Load();
+        }
+        else
+        {
+            await _ticketService.LoadByDevice(SelectedDevice);
+        }
+
+        //per refresh
+        await OnRefreshParent.InvokeAsync(true);
+    }
+}

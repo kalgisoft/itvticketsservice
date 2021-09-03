@@ -1,0 +1,16 @@
+﻿** In evidenza
+     Tabelle che verranno ricompilate
+       Nessuno
+     Indici cluster che verranno eliminati
+       Nessuno
+     Indici cluster che verranno creati
+       Nessuno
+     Possibili problemi di dati
+       Nessuno
+
+** Azioni utente
+     Crea
+       [dbo].[spPlantsToClient_Delete] (Routine)
+       [dbo].[spPlantsToClient_ListPlants] (Routine)
+
+** Azioni di supporto

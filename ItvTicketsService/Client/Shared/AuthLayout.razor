@@ -1,0 +1,46 @@
+﻿@inherits LayoutComponentBase
+
+<div class="bg-primary">
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_header">
+            <header class="py-2 bg-light mt-auto">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="logoDiv">
+                            <a class="navbar-brand" href="/">
+                                <img src="images/itv-logo.png" alt="logo" style="width: 196px;height: 40px;">
+                            </a>
+                        </div>
+                        <div class="serviceCenterdiv">
+                            <div class="input-group">
+                                <div class="navbar-brand">
+                                    Service Center
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        </div>
+
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        @Body
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+        <div id="layoutAuthentication_footer">
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Sync: online/offline</div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>

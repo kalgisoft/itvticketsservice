@@ -1,0 +1,64 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
+@inject CustomStateProvider authStateProvider
+
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+
+    <a class="navbar-brand" href="/">
+        <img src="images/itv-logo.png" alt="logo" />
+    </a>
+
+    <!-- Navbar Search-->
+    <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+        <div class="input-group">
+            <AuthorizeView>
+                <div class="navbar-brand">
+                    Welcome @context.User.Identity.Name!
+                </div>
+            </AuthorizeView>
+        </div>
+    </form>
+
+    <!--
+    <ul class="navbar-nav ml-auto ml-md-0">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">Userinfo</a>
+                <div class="dropdown-divider"></div>
+                <a type="button" class="dropdown-item" @onclick="@LogoutClick">Logout</a>
+            </div>
+        </li>
+    </ul>
+    -->
+<div class="dropdown">
+    <button class="btn btn-secondary"  @onclick="@LogoutClick" type="button" id="logoutButton" aria-expanded="false">
+        Logout
+    </button>
+</div>
+</nav>
+
+<div id="layoutSidenav">
+    @Body
+</div>
+
+
+@functions{
+
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!(await AuthenticationState).User.Identity.IsAuthenticated)
+        {
+            navigationManager.NavigateTo("/login");
+        }
+    }
+
+    async Task LogoutClick()
+    {
+        await authStateProvider.Logout();
+        navigationManager.NavigateTo("/login");
+    }
+}

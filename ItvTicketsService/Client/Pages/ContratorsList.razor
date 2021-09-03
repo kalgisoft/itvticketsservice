@@ -1,0 +1,211 @@
+﻿@page "/contractorslist"
+@inject IContractorsService ContractorsService
+@inject IDialogService _dialogService
+
+
+<h1 style="text-align:center">Contractors List</h1>
+
+<MudDialog @bind-IsVisible="visible">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Error" Class="mr-3" /> Error
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <p>@error</p>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit" Class="px-10">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+<div class="container">
+    <main>
+
+        <div class="row g-5">
+            <p>@error</p>
+        </div>
+
+        <div class="row g-5">
+            <p>
+                <table id="search-add">
+                    <tr>
+                        <td>
+                            <MudLink Href="/contractorsaddedit/0">Add a Contractor</MudLink>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <!-- Back home -->
+                            <MudLink Href="/">Home</MudLink>
+                        </td>
+                    </tr>
+                </table>
+            </p>
+        </div>
+
+        <div class="row g-5">
+
+            @if (contractors == null)
+            {
+                <p style="text-align:center"><img src="../images/loader.gif" /></p>
+            }
+            else
+            {
+                <MudTable Items="@contractors" Hover="true" Breakpoint="Breakpoint.Sm" Loading="false">
+                    <HeaderContent>
+                        <MudTh>Edit</MudTh>
+                        <MudTh>Id</MudTh>
+                        <MudTh>Name</MudTh>
+                        <MudTh>Delete</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Edit">
+                            <a href="contractorsaddedit/@context.Id">
+                                <MudIcon Icon="@Icons.Filled.Edit" Color="Color.Primary" Title="Edit" />
+                            </a>
+                        </MudTd>
+                        <MudTd DataLabel="Id">@context.Id</MudTd>
+                        <MudTd DataLabel="Name">@context.Name</MudTd>
+                        <MudTd DataLabel="Delete">
+                            <MudIconButton @onclick="@(() => Delete(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            }
+        </div>
+
+        <div class="row g-5">
+            <p></p>
+        </div>
+
+    </main>
+</div>
+
+<!--
+
+<table id="search-add">
+    <tr>
+        <td>
+            <a href="/contractorsaddedit/0"><span class="oi oi-plus"></span>Add a Contractor</a>
+        </td>
+        <td>
+            <span class="oi oi-magnifying-glass" style="color:blue;"></span>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <a href="/"><span class="oi oi-plus"></span>Home</a>
+        </td>
+    </tr>
+</table>
+
+<div id="list">
+    @if (contractors == null)
+    {
+        <p style="text-align:center">
+            <img src="../images/loader.gif" />
+        </p>
+    }
+    else
+    {
+        <table class="genlist">
+            <tr>
+
+                <td colspan="10" style="text-align:left;font-weight:bold;font-size:120%"></td>
+            </tr>
+            <tr>
+                <th>Edit</th>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Delete</th>
+            </tr>
+            @foreach (var cntr in contractors)
+            {
+                <tr>
+                    <td>
+
+                        <a href="contractorsaddedit/@cntr.Id">
+                            <span class="oi oi-pencil" style="color:blue;"></span>
+                            <img src="../images/iEdit.png" />
+                        </a>
+                    </td>
+                    <td>@cntr.Id</td>
+                    <td>@cntr.Name</td>
+                    <td>
+                        <a href="contractorsdelete/@cntr.Id">
+
+                            <span class="oi oi-trash" style="color:red;"></span>
+                            <img src="../images/iTrash.png" alt="Delete" title="Delete" />
+                        </a>
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+</div>
+
+-->
+
+
+@code {
+    private bool visible = false;
+    private string error = string.Empty;
+
+    // Create an empty list, named plants, of empty Plant objects.
+    List<Contractor> contractors;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Populate the list of contractors objects from the contractors table.
+        contractors = await ContractorsService.GetContractorsList();
+    }
+
+    //Executes if user confirms the deletion.
+    protected async Task Delete(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", $"Do you really want to delete contractor id={ id }? This process cannot be undone.");
+        parameters.Add("ButtonText", "Delete");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = _dialogService.Show<ItvModalDialog>("Delete", parameters, options);
+
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            try
+            {
+                var res = await ContractorsService.ContractorsDelete(id);
+
+                if (res.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    error = await res.Content.ReadAsStringAsync();
+                    OpenDialog();
+                }
+
+                //reload
+                await OnInitializedAsync();
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                OpenDialog();
+            }
+        }
+    }
+
+    private void OpenDialog() => visible = true;
+
+    void Submit()
+    {
+        error = string.Empty;
+        visible = false;
+    }
+}

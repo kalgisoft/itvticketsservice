@@ -1,0 +1,73 @@
+﻿@page "/administrationoffice"
+@inherits Index
+@inject ITicketService _ticketService
+
+<h3>Office Administration</h3>
+
+<p>pTag</p>
+
+<div class="col-sm-12">
+    <div class="card mb-4">
+        <div class="card-header">
+            <div style="float:left">
+                <i class="fas fa-plus-square mr-1"></i>
+                Ginetto
+            </div>
+        </div>
+
+        <div class="card-body">
+
+
+            <MudTable Items="@_ticketService.Tickets" Hover="true" SortLabel="Sort By" FixedHeader="true">
+                <HeaderContent>
+                    <MudTh>Id</MudTh>
+                    <MudTh>Creation Date</MudTh>
+                    <MudTh>Client Name</MudTh>
+                    <MudTh>Plant Name</MudTh>
+                    <MudTh>Device Code</MudTh>
+                    <MudTh>Reason</MudTh>
+                    <MudTh>Status</MudTh>
+                    <MudTh>Managed</MudTh>
+                    <MudTh>Report</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Id">@context.TicketId</MudTd>
+                    <MudTd DataLabel="Date">@context.CreatedDate.ToShortDateString()</MudTd>
+                    <MudTd DataLabel="Client Name">
+                        @if (dictClients.ContainsKey(context.ClientId))
+                            @dictClients[context.ClientId]
+                    </MudTd>
+                    <MudTd DataLabel="Plant Name">
+                        @if (dictDeviceToPlantName.ContainsKey(context.DeviceId))
+                            @dictDeviceToPlantName[context.DeviceId]
+                    </MudTd>
+                    <MudTd DataLabel="Code">
+                        @if (dictDevices.ContainsKey(context.DeviceId))
+                            @dictDevices[context.DeviceId]
+                    </MudTd>
+                    <MudTd DataLabel="Reason">@context.Reason</MudTd>
+                    <MudTd DataLabel="Status"> @context.TicketStatus</MudTd>
+                    <MudTd DataLabel="Managed"><MudSwitch Color="Color.Primary" @bind-Checked=@(disabled) Label="Managed" /></MudTd>
+                    <MudTd DataLabel="Report">
+                        <MudButton @onclick="@(() => BuildTicketReportAsync(context))" Variant="Variant.Filled" Color="Color.Error">Delete</MudButton>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    bool disabled = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        int k = _ticketService.Tickets.Count;
+    }
+
+    private void BuildTicketReportAsync(Tickets tk)
+    {
+        int kk = 0;
+    }
+}

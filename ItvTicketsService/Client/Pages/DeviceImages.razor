@@ -1,0 +1,93 @@
+﻿@page "/deviceimages/{Code}"
+
+@inject IDeviceImagesService _deviceImagesService
+
+@using System.IO;
+
+<h3>DeviceImages</h3>
+
+<a href="/"><span class="oi oi-plus"></span>Home</a>
+
+<div class="row">
+    <div class="col-md-3">
+        <h2>File List</h2>
+        <br />
+        @if (filesList != null && filesList.Count > 0)
+        {
+            int n = 0;
+            @foreach (string file in filesList)
+            {
+                n++;
+
+                <br />
+                <span>@n.</span>
+                <span @onclick="@(e=>ReadFile(file))" style="cursor:pointer; text-decoration:underline;color:blue">@file</span>
+            }
+        }
+    </div>
+
+    <div class="col-md-9">
+        <h1>Image Name: @imageName</h1>
+        <div>
+            @if (!string.IsNullOrEmpty(stringImage))
+            {
+                <img src= "data:image/png;base64,@stringImage" />
+            }
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public string Code { get; set; }
+
+    string img = string.Empty;
+    string imageName = string.Empty;
+
+    string stringImage = string.Empty;
+
+    List<string> filesList = new List<string>();
+
+    string path1 = @"images/devices/";
+
+    //Executes on page open, set defaults on page.
+    protected override async Task OnInitializedAsync()
+    {
+        filesList = await _deviceImagesService.DeviceImages(Code);
+
+        //stringImage = await _deviceImagesService.GetImageBytes(Code, "0052_0_0.png");
+    }
+
+
+    public async Task<string> ReadFile(string filename)
+    {
+        imageName = Path.GetFileName(filename);
+
+        byte[] bytes = await _deviceImagesService.GetImageBytes(Code, imageName);
+
+        stringImage = Convert.ToBase64String(bytes);
+        int k = 0;
+
+        /*
+        HttpResponseMessage rsp = await _deviceImagesService.GetImageBytes(Code, imageName);
+        //stringImage = await _deviceImagesService.GetImageBytes(Code, imageName);
+
+        if (rsp.IsSuccessStatusCode)
+        {
+            byte[] bytes = await rsp.Content.ReadAsByteArrayAsync();
+            int bl = bytes.Length;
+            stringImage = Convert.ToBase64String(bytes);
+
+            //stringImage = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+
+            //string theStr = await rsp.Content.ReadAsStringAsync();
+            //stringImage = theStr.Replace("\"", string.Empty);
+        }
+        */
+
+
+        //<img src="@img" style="width:400px;height:400px" />
+        return stringImage;
+    }
+}

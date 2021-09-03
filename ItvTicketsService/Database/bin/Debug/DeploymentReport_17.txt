@@ -1,0 +1,23 @@
+﻿** In evidenza
+     Tabelle che verranno ricompilate
+       Nessuno
+     Indici cluster che verranno eliminati
+       Nessuno
+     Indici cluster che verranno creati
+       Nessuno
+     Possibili problemi di dati
+       Nessuno
+
+** Azioni utente
+     Modifica
+       [dbo].[Devices] (Tabella)
+     Crea
+       [dbo].[DeviceInfo] (Tabella)
+
+** Azioni di supporto
+     Aggiorna
+       [dbo].[spDevice_Delete] (Routine)
+       [dbo].[spDevice_GetOne] (Routine)
+       [dbo].[spDevice_Insert] (Routine)
+       [dbo].[spDevice_List] (Routine)
+       [dbo].[spDevice_Update] (Routine)

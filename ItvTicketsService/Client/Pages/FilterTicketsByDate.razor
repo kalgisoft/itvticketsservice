@@ -1,0 +1,65 @@
+﻿@inherits Index
+@inject ITicketService _ticketService
+
+<div class="col-sm-12">
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Search Tickets by Date:
+        </div>
+        <div class="card-body">
+
+            <EditForm Model="@sbd" OnValidSubmit="@Filter" class="form-inline">
+
+                <div class='row'>
+                    <div class='col-2'>
+                        <label for='Code'>Date From:</label>
+                    </div>
+                    <div class='col-4'>
+                        <InputDate @bind-Value="sbd.DateFrom" class='form-control' id='DataInizio' />
+                    </div>
+
+                    <div class='col-2'>
+                        <label for='Code'>Date To:</label>
+                    </div>
+                    <div class='col-4'>
+                        <InputDate @bind-Value="sbd.DateTo" class='form-control' id='DataFine' />
+                    </div>
+
+                    <button class="btn btn-primary btn-block" @onsubmit="@Filter">Search</button>
+                </div>
+
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    // Create a new, empty Device object
+    SearchByDate sbd = new SearchByDate();
+
+    //[Parameter]
+    //public List<Tickets> tickets { get; set; } = new List<Tickets>();
+    [Parameter]
+    public EventCallback<bool> OnRefreshParent { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        sbd.DateFrom = DateTime.Now;
+        sbd.DateTo = sbd.DateFrom;
+    }
+
+    public async Task Filter()
+    {
+        _ticketService.Tickets.Clear();
+        _ticketService.Tickets = await _ticketService.Tickets_GetByDate(sbd.DateFrom, sbd.DateTo);
+
+        int kk = _ticketService.Tickets.Count;
+        kk += 0;
+
+        //per refresh
+        await OnRefreshParent.InvokeAsync(true);
+    }
+}

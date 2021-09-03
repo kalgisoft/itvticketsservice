@@ -1,0 +1,230 @@
+﻿@inherits Index
+@inject ITicketService _ticketService
+
+
+<div class="col-sm-12">
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Tickets history:
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Id</th>
+                            <th>Date</th>
+                            <th>Client Name</th>
+                            <th>Plant Name</th>
+                            <th>Dev Code</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            @if (UserType == 1) //se Admin
+                            {
+                                <th>Delete</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tk in tickets)
+                        {
+                        <tr>
+                            <td>
+                                <a href="ticketaddedit/@tk.TicketId">
+                                    <span class="oi oi-pencil" style="color:blue;"></span>
+                                    <img src="../images/iEdit.png" />
+                                </a>
+                            </td>
+
+                            <td>@tk.TicketId</td>
+                            <td>@tk.CreatedDate.ToShortDateString()</td>
+                            <td>
+                                @if (dictClients.ContainsKey(tk.ClientId))
+                                    @dictClients[tk.ClientId]
+                            </td>
+                            <td>
+                                @if (dictDeviceToPlantName.ContainsKey(tk.DeviceId))
+                                {
+                                    @dictDeviceToPlantName[tk.DeviceId]
+                                }
+                            </td>
+                            <td>
+                                @if (dictDevices.ContainsKey(tk.DeviceId) && dictDeviceLine.ContainsKey(tk.DeviceId))
+                                {
+                                    <a href="/deviceinforeport/@dictDevices[tk.DeviceId]">
+                                        <span class="oi oi-plus">
+                                            @dictDevices[tk.DeviceId] (@dictDeviceLine[tk.DeviceId])
+                                        </span>
+                                    </a>
+                                }
+                            </td>
+
+                            <td>@tk.Reason</td>
+                            <td>
+                                @if (tk.TicketStatusId >= _ticketService.TicketStatuses.Max(x => x.TicketStatusId) - 1)
+                                {
+                                    @tk.TicketStatus
+                                }
+                                else
+                                {
+                                    btnStatus = "btn btn-primary";
+
+                                    @if (tk.TicketStatusId == (int)TicketStatusMaster.InProgress)
+                                    {
+                                        btnStatus = "btn btn-success";
+                                    }
+
+                                    @if (tk.TicketStatusId == (int)TicketStatusMaster.Complete)
+                                    {
+                                        btnStatus = "btn btn-warning";
+                                    }
+
+                                    @if (tk.TicketStatusId == (int)TicketStatusMaster.Approve)
+                                    {
+                                        btnStatus = "btn btn-danger";
+                                    }
+
+                                    <button class=@btnStatus @onclick="@(() => { UpdateTicket(tk, true); OnMyRefresh();})">
+                                        @tk.TicketStatus
+                                    </button>
+                                }
+                            </td>
+
+                            <td>
+                                @if (UserType == 1) //se Admin
+                                {
+                                    <button class="btn btn-primary btn-primary-extended" @onclick="@(() => DeleteTicket(tk))">
+                                        Delete
+                                    </button>
+                                }
+                            </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int UserType { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnRefreshParentUpdDel { get; set; }
+
+    [Parameter]
+    public List<Tickets> tickets { get; set; }
+
+    public string btnStatus = "btn btn-primary btn-primary-extended";
+
+    async Task OnMyRefresh()
+    {
+        //per refresh
+        await OnRefreshParentUpdDel.InvokeAsync(true);
+    }
+
+    /*
+    async Task UpdateTicket(Tickets ticket, bool updateStatus)
+    {
+        error = null;
+
+        try
+        {
+            //ticket current state
+            Tickets cTicket = await _ticketService.GetTicketsById(ticket.TicketId);
+
+            bool advanceStatus = true;
+            if (updateStatus)
+            {
+                if (cTicket.TicketStatusId == (int)TicketStatusMaster.ToDo)
+                {
+                    cTicket.OpenDate = DateTime.Now;
+                    cTicket.TeamId = _ticketService.LoggedInUser.UserId;
+                    if (_ticketService.LoggedInUser.Role.Contains(RoleType.Client))
+                    {
+                        cTicket.TicketStatusId = (int)TicketStatusMaster.Aborted;
+                        cTicket.TicketStatus = _ticketService.TicketStatuses.First(x => x.TicketStatusId == cTicket.TicketStatusId).TicketStatus;
+                        cTicket.CloserId = _ticketService.LoggedInUser.UserId;
+                        cTicket.CloseDate = DateTime.Now;
+                        advanceStatus = false;
+                    }
+                }
+
+                if (cTicket.TicketStatusId == (int)TicketStatusMaster.Approve)
+                {
+                    cTicket.CloserId = _ticketService.LoggedInUser.UserId;
+                    cTicket.CloseDate = DateTime.Now;
+                }
+
+                if (cTicket.TicketStatusId == (int)TicketStatusMaster.Closed)
+                {
+                    if (!_ticketService.LoggedInUser.Role.Contains(RoleType.Admin))
+                    {
+                        advanceStatus = false;
+                    }
+                }
+
+                if (cTicket.TicketStatusId == (int)TicketStatusMaster.Aborted)
+                {
+                    if (!_ticketService.LoggedInUser.Role.Contains(RoleType.Admin))
+                    {
+                        advanceStatus = false;
+                    }
+                }
+
+                if (advanceStatus)
+                {
+                    if (cTicket.TicketStatusId != (int)TicketStatusMaster.Aborted)
+                    {
+                        cTicket.TicketStatusId = ticket.TicketStatusId + 1;
+                    }
+                    else
+                    {
+                        //restart loop
+                        cTicket.TicketStatusId = (int)TicketStatusMaster.ToDo;
+                    }
+
+                    cTicket.TicketStatus = _ticketService.TicketStatuses.First(x => x.TicketStatusId == cTicket.TicketStatusId).TicketStatus;
+                }
+            }
+
+            //aggiorna ticket
+            //ticket = cTicket;
+
+            await _ticketService.UpdateTicket(cTicket, updateStatus);
+
+            error = "Ticket updated successfully.";
+            await OnInitializedAsync();
+            await OnRefreshParent.InvokeAsync(true);
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+
+
+    async Task DeleteTicket(Tickets tk)
+    {
+        error = null;
+
+        try
+        {
+            await _ticketService.DeleteTicket(tk);
+
+            error = "Ticket deleted successfully.";
+            await OnInitializedAsync();
+            await OnRefreshParent.InvokeAsync(true);
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+    */
+}

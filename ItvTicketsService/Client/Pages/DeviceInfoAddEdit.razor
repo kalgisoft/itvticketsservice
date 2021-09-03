@@ -1,0 +1,592 @@
+﻿@page "/deviceinfoaddedit/{Code}"
+@inject IDeviceInfoService DeviceInfoService
+@inject NavigationManager NavigationManager
+
+<h3>Insert/Update Device @Code Info</h3>
+
+<EditForm Model="@devInfo" OnValidSubmit="@Save" class="form-inline">
+    <div class="container">
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Macchina:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoMacchina" class='form-control' id='TipoMacchina' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Senso di Marcia:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.SensoDiMarcia" class='form-control' id='SensoDiMarcia' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Matricola:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.Matricola" class='form-control' id='Matricola' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Cliente:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.Cliente" class='form-control' id='Cliente' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Commessa Nr.:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.CommessaNr" class='form-control' id='CommessaNr' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Data Collaudo:</label>
+            </div>
+            <div class='col-4'>
+                <InputDate @bind-Value="devInfo.DataCollaudo" class='form-control' id='DataCollaudo' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Data Consegna:</label>
+            </div>
+            <div class='col-4'>
+                <InputDate @bind-Value="devInfo.DataConsegna" class='form-control' id='DataConsegna' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Compilato Da:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.CompilatoDa" class='form-control' id='CompilatoDa' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Data:</label>
+            </div>
+            <div class='col-4'>
+                <InputDate @bind-Value="devInfo.Data" class='form-control' id='Data' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo PC:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoPC" class='form-control' id='TipoPC' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Hard Disk:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.HardDisk" class='form-control' id='HardDisk' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>RAM:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.RAM" class='form-control' id='RAM' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Grabber:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.Grabber" class='form-control' id='Grabber' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Numero di Led:</label>
+            </div>
+            <div class='col-4'>
+                <InputNumber @bind-Value="devInfo.NumLed" class='form-control' id='Numled' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Led D:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoLedD" class='form-control' id='TipoLedD' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Led N:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoLedN" class='form-control' id='TipoLedN' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Distanza Ill.:</label>
+            </div>
+            <div class='col-4'>
+                <InputNumber @bind-Value="devInfo.DistanzaIlluminatore" class='form-control' id='DistanzaIluminatore' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Note:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.Note1" class='form-control' id='Note1' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Realizzato Da:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.RealizzatoDa" class='form-control' id='RealizzatoDa' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Data:</label>
+            </div>
+            <div class='col-4'>
+                <InputDate @bind-Value="devInfo.Data1" class='form-control' id='Data1' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Quadro Realizzato Da:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.QuadroRealDa" class='form-control' id='QuadroRelDa' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Numero Schema Eettrico:</label>
+            </div>
+            <div class='col-4'>
+                <InputNumber @bind-Value="devInfo.NumSchemaEl" class='form-control' id='NumSchemaEl' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Install. Realizzata Da:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.installRealDa" class='form-control' id='InstallRealDa' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Gruppo Continuita:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.GruppoCont" class='form-control' id='GruppoCont' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Collaudo Eseguito Da:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.CollaudoRealDa" class='form-control' id='CollaudoRealDa' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Condizionatore:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.Condizionatore" class='form-control' id='Condizionatore' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Note:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.Note2" class='form-control' id='Note2' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Versione SW TileVision:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.VerSWTilevision" class='form-control' id='VersSWTilevision' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Versione SW CalibroPlanar:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.VerSWCalibroPlanar" class='form-control' id='VerSWCalibroPlanar' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Numero Sensori Planar:</label>
+            </div>
+            <div class='col-4'>
+                <InputNumber @bind-Value="devInfo.NumSensPlanar" class='form-control' id='NumSensPlanar' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Sensori:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoSens" class='form-control' id='TipoSens' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Note Aggiuntive:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.NoteAggiuntive" class='form-control' id='NoteAggiuntive' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Nome PC:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.NomePC" class='form-control' id='NomePC' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Cinghia:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoCinghia" class='form-control' id='TipoCinghia' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Larghezza Cinghia:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.LargCinghia" class='form-control' id='LargCinghia' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Motori:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoMotori" class='form-control' id='TipoMotori' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Riduttori:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoRiduttori" class='form-control' id='TipoRiduttori' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Marcatura:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoMarcatura" class='form-control' id='TipoMarcatura' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Centratore:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.Centratore" class='form-control' id='Centratore' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Motore Mov. Traverse:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.MotoreMovTraverse" class='form-control' id='MotoreMovTraverse' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Encoder:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoEncoder" class='form-control' id='TipoEncoder' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Azionamenti:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoAzionamenti" class='form-control' id='TipoAzionamenti' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Massimo Formato:</label>
+            </div>
+            <div class='col-4'>
+                <InputNumber @bind-Value="devInfo.MassimoFormato" class='form-control' id='MassimoFormato' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Minimo Formato:</label>
+            </div>
+            <div class='col-4'>
+                <InputNumber @bind-Value="devInfo.MinimoFormato" class='form-control' id='MinimoFormato' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Motori Telecamera:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoMotoriTLC" class='form-control' id='TipoMotoriTLC' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Altezza Telecamera N:</label>
+            </div>
+            <div class='col-4'>
+                <InputNumber @bind-Value="devInfo.AltezzaTlcN" class='form-control' id='AltezzaTlcN' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Camera N:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoTlcN" class='form-control' id='TipoTlcN' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Camera D:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoTlcD" class='form-control' id='TipoTlcD' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Obbiettivo N:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoObjN" class='form-control' id='TipoObjN' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Tipo Obiettivo D:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.TipoObjD" class='form-control' id='TipoObjD' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Apertura Obbiettivo N:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.AperturaObjN" class='form-control' id='AperturaObjN' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Apertura Obbiettivo D:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.AperturaObjD" class='form-control' id='AperturaObjD' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Note:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.Note3" class='form-control' id='Note3' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Montaggio Realizzato Da:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="devInfo.MontaggioDa" class='form-control' id='MontaggioDa' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Code'>Data:</label>
+            </div>
+            <div class='col-4'>
+                <InputDate @bind-Value="devInfo.Data2" class='form-control' id='Data2' />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 errormsg">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 buttons">
+                <button class="btn btn-primary" @onsubmit="@Save">@buttontext</button>
+                <button class="btn btn-secondary" @onclick="@Cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+
+    // Create a new, empty Device object
+    DeviceInfo devInfo = new DeviceInfo();
+
+    [Parameter]
+    public string Code { get; set; }
+
+    // Set default page title and button text
+    public string pagetitle = "Add a DeviceInfo";
+    public string buttontext = "Add";
+
+    //Executes on page open, set defaults on page.
+    protected override async Task OnInitializedAsync()
+    {
+
+        // ============ If the passed-in Id is zero, assume new Plant.
+        if (string.IsNullOrEmpty(Code))
+        {
+            // Use this block to set for defaults (optional)
+        }
+        else
+        {
+            try
+            {
+                devInfo = await DeviceInfoService.Device_GetInfoByCode(Code);
+            }
+            catch (Exception ex)
+            {
+                string sss = ex.Message;
+
+            }
+
+            if (string.IsNullOrEmpty(devInfo.Code)) //not found
+            {
+                DateTime now = DateTime.Now;
+                devInfo.Code = Code;
+                devInfo.DataCollaudo = now;
+                devInfo.DataConsegna = now;
+                devInfo.Data = now;
+                devInfo.Data1 = now;
+                devInfo.Data2 = now;
+            }
+
+            // Change page title and button text since this is an edit.
+            pagetitle = "Edit DeviceInfo";
+            buttontext = "Update";
+        }
+    }
+
+    // Executes OnValidSubmit of EditForm above.
+    protected async Task Save()
+    {
+        if (string.IsNullOrEmpty(devInfo.Code))
+        {
+            // Insert if Id is zero.
+            await DeviceInfoService.DeviceInfoUpsert(devInfo);
+        }
+        else
+        {
+            // Update if Id not 0
+            await DeviceInfoService.DeviceInfoUpsert(devInfo);
+        }
+        NavigationManager.NavigateTo("/devicelist");
+    }
+
+    //Executes if user clicks the Cancel button.
+    protected void Cancel()
+    {
+        NavigationManager.NavigateTo("/devicelist");
+    }
+}

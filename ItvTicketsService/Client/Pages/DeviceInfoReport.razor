@@ -1,0 +1,559 @@
+﻿@page "/deviceinforeport/{Code}"
+@inject IDeviceInfoService DeviceInfoService
+
+<h3>Device @Code Report</h3>
+
+<div class="container">
+
+    <div class="row g-5">
+        <p>
+            <table id="devinfo">
+                <tr>
+                    <td>
+                        <label>Device Images: </label>
+                        <a href="/deviceimages/@Code">
+                            <MudIcon Icon="@Icons.Filled.ImageSearch" Color="Color.Primary" Title="Device Images" />
+                        </a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label>Home: </label>
+                        <MudLink Href="/">
+                            <MudIcon Icon="@Icons.Filled.Home" Color="Color.Primary" Title="Home" />
+                        </MudLink>
+                    </td>
+                </tr>
+            </table>
+        </p>
+    </div>
+
+    <br />
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoMacchina'>Tipo Macchina:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoMacchina'>@devInfo.TipoMacchina</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='SensoDiMarcia'>Senso di Marcia:</label>
+        </div>
+        <div class='col-4'>
+            <label for='SensoDiMarcia'>@devInfo.SensoDiMarcia</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='Matricola'>Matricola:</label>
+        </div>
+        <div class='col-4'>
+            <label for='Matricola'>@devInfo.Matricola</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='Cliente'>Cliente:</label>
+        </div>
+        <div class='col-4'>
+            <label for='Clinte'>@devInfo.Cliente</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='CommessaNr'>Numero Commessa:</label>
+        </div>
+        <div class='col-4'>
+            <label for='CommessaNr'>@devInfo.CommessaNr</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='DataCollaudo'>Data Collaudo:</label>
+        </div>
+        <div class='col-4'>
+            <label for='DataCollaudo'>@devInfo.DataCollaudo</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='DataConsegna'>Data Consegna:</label>
+        </div>
+        <div class='col-4'>
+            <label for='DataConsegna'>@devInfo.DataConsegna</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='CompilatoDa'>Compilato Da:</label>
+        </div>
+        <div class='col-4'>
+            <label for='CompilatoDa'>@devInfo.CompilatoDa</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='Data'>Data:</label>
+        </div>
+        <div class='col-4'>
+            <label for='Data'>@devInfo.Data</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoPC'>Tipo PC:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoPC'>@devInfo.TipoPC</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='HardDisk'>Hard Disk:</label>
+        </div>
+        <div class='col-4'>
+            <label for='HardDisk'>@devInfo.HardDisk</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='RAM'>RAM:</label>
+        </div>
+        <div class='col-4'>
+            <label for='RAM'>@devInfo.RAM</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='Grabber'>Grabber:</label>
+        </div>
+        <div class='col-4'>
+            <label for='Grabber'>@devInfo.Grabber</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='NumLed'>Numero Led:</label>
+        </div>
+        <div class='col-4'>
+            <label for='NumLed'>@devInfo.NumLed</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoLedD'>Tipo Led D:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoLedD'>@devInfo.TipoLedD</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoLedN'>Tipo Led N:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoLedN'>@devInfo.TipoLedN</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='DistanzaIlluminatore'>Distanza Illuminatore:</label>
+        </div>
+        <div class='col-4'>
+            <label for='DistanzaIlluminatore'>@devInfo.DistanzaIlluminatore</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='Note'>Note:</label>
+        </div>
+        <div class='col-4'>
+            <label for='Note'>@devInfo.Note1</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='RealizzatoDa'>Realizzato Da:</label>
+        </div>
+        <div class='col-4'>
+            <label for='RealizzatoDa'>@devInfo.RealizzatoDa</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='Data1'>Data:</label>
+        </div>
+        <div class='col-4'>
+            <label for='Data1'>@devInfo.Data1</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='QuadroRealDa'>Quadro Realizzato Da:</label>
+        </div>
+        <div class='col-4'>
+            <label for='QuadroRealDa'>@devInfo.QuadroRealDa</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='NumSchemaEl'>Nr. Schema Elettrico:</label>
+        </div>
+        <div class='col-4'>
+            <label for='NumSchemaEl'>@devInfo.NumSchemaEl</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='InstallRealDa'>Install. Realizzata Da:</label>
+        </div>
+        <div class='col-4'>
+            <label for='InstallRealDa'>@devInfo.installRealDa</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='GruppoCont'>Gruppo di Continuita:</label>
+        </div>
+        <div class='col-4'>
+            <label for='GruppoCont'>@devInfo.GruppoCont</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoMacchina'>Collaudo Eseguito Da:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoMacchina'>@devInfo.CollaudoRealDa</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='Condizionatore'>Condizionatore:</label>
+        </div>
+        <div class='col-4'>
+            <label for='Condizionatore'>@devInfo.Condizionatore</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='Note2'>Note:</label>
+        </div>
+        <div class='col-4'>
+            <label for='Note2'>@devInfo.Note2</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='VerSWTilevision'>Versione SW TileVision:</label>
+        </div>
+        <div class='col-4'>
+            <label for='VerSWTilevision'>@devInfo.VerSWTilevision</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='VerSWCalibroPlanar'>Versione SW CalibroPlanar:</label>
+        </div>
+        <div class='col-4'>
+            <label for='VerSWCalibroPlanar'>@devInfo.VerSWCalibroPlanar</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='NumSensPlanar'>Numero Sensori Planar:</label>
+        </div>
+        <div class='col-4'>
+            <label for='NumSensPlanar'>@devInfo.NumSensPlanar</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoSens'>Tipo Sensori:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoSens'>@devInfo.TipoSens</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='NoteAggiuntive'>Note Aggiuntive:</label>
+        </div>
+        <div class='col-4'>
+            <label for='NoteAggiuntive'>@devInfo.NoteAggiuntive</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='NomePC'>Nome PC:</label>
+        </div>
+        <div class='col-4'>
+            <label for='NomePC'>@devInfo.NomePC</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoCinghia'>Tipo Cinghia:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoCinghia'>@devInfo.TipoCinghia</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='LargCinghia'>Larghezza Cinghia:</label>
+        </div>
+        <div class='col-4'>
+            <label for='LargCinghia'>@devInfo.LargCinghia</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoMotori'>Tipo Motori:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoMotori'>@devInfo.TipoMotori</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoRiduttori'>Tipo Riduttori:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoRiduttori'>@devInfo.TipoRiduttori</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoMarcatura'>Tipo Marcatura:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoMarcatura'>@devInfo.TipoMarcatura</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='Centratore'>Centratore:</label>
+        </div>
+        <div class='col-4'>
+            <label for='Centratore'>@devInfo.Centratore</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='MotoreMovTraverse'>Motore Movimento Traverse:</label>
+        </div>
+        <div class='col-4'>
+            <label for='MotoreMovTraverse'>@devInfo.MotoreMovTraverse</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoEncoder'>Tipo Encoder:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoEncoder'>@devInfo.TipoEncoder</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoAzionamenti'>Tipo Azionamenti:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoAzionamenti'>@devInfo.TipoAzionamenti</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='MassimoFormato'>Massimo Formato:</label>
+        </div>
+        <div class='col-4'>
+            <label for='MassimoFormato'>@devInfo.MassimoFormato</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='MinimoFormato'>Minimo Formato:</label>
+        </div>
+        <div class='col-4'>
+            <label for='MinimoFormato'>@devInfo.MinimoFormato</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoMotoriTLC'>Tipo Motori Telecamera:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TioMotoriTLC'>@devInfo.TipoMotoriTLC</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='AltezzaTlcN'>Altezza Telecamera N:</label>
+        </div>
+        <div class='col-4'>
+            <label for='AltezzaTlcN'>@devInfo.AltezzaTlcN</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoTlcN'>Tipo Camera N:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoTlcN'>@devInfo.TipoTlcN</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoTlcD'>Tipo Telecamera D:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoTcD'>@devInfo.TipoTlcD</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoObjN'>Tipo Obbiettivo N:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoObjN'>@devInfo.TipoObjN</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TipoObjD'>Tipo Obbiettivo D:</label>
+        </div>
+        <div class='col-4'>
+            <label for='TipoObjD'>@devInfo.TipoObjD</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='AperturaObjN'>Apertura Obbiettivo N:</label>
+        </div>
+        <div class='col-4'>
+            <label for='AperturaObjN'>@devInfo.AperturaObjN</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='AperturaObjD'>Apertura Obbiettivo D:</label>
+        </div>
+        <div class='col-4'>
+            <label for='AperturaObjD'>@devInfo.AperturaObjD</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='Note3'>Note:</label>
+        </div>
+        <div class='col-4'>
+            <label for='Note3'>@devInfo.Note3</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='MontaggioDa'>Montaggio Realizzato Da:</label>
+        </div>
+        <div class='col-4'>
+            <label for='MontaggioDa'>@devInfo.MontaggioDa</label>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='col-2'>
+            <label for='Data2'>Data:</label>
+        </div>
+        <div class='col-4'>
+            <label for='Data2'>@devInfo.Data2</label>
+        </div>
+    </div>
+
+</div>
+
+@code {
+    // Create a new, empty Device object
+    DeviceInfo devInfo = new DeviceInfo();
+
+    [Parameter]
+    public string Code { get; set; }
+
+    // Set default page title and button text
+    public string pagetitle = "Add a DeviceInfo";
+    public string buttontext = "Add";
+
+    //Executes on page open, set defaults on page.
+    protected override async Task OnInitializedAsync()
+    {
+
+        // ============ If the passed-in Id is zero, assume new Plant.
+        if (string.IsNullOrEmpty(Code))
+        {
+            // Use this block to set for defaults (optional)
+        }
+        else
+        {
+            devInfo = await DeviceInfoService.Device_GetInfoByCode(Code);
+            // Change page title and button text since this is an edit.
+            pagetitle = "Edit DeviceInfo";
+            buttontext = "Update";
+        }
+    }
+}

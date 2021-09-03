@@ -1,0 +1,23 @@
+D:\Projects\Sachin\ltvTickets\Database\bin\Debug\Database.dacpac
+D:\Projects\Sachin\ltvTickets\Database\obj\Debug\Model.xml
+D:\Projects\Sachin\ltvTickets\Database\obj\Debug\refactor.xml
+D:\Projects\Sachin\ltvTickets\Database\obj\Debug\postdeploy.sql
+D:\Projects\Sachin\ltvTickets\Database\obj\Debug\predeploy.sql
+D:\Projects\Sachin\ltvTickets\Database\obj\Debug\Database.dll
+D:\Projects\Sachin\ltvTickets\Database\obj\Debug\Database.pdb
+G:\manz\Guru\kalgisoft\ltvTickets v1.1\ltvTickets\Database\bin\Debug\Database.dacpac
+G:\manz\Guru\kalgisoft\ltvTickets v1.1\ltvTickets\Database\bin\Debug\Database.dll
+G:\manz\Guru\kalgisoft\ltvTickets v1.1\ltvTickets\Database\bin\Debug\Database.pdb
+G:\manz\Guru\kalgisoft\ltvTickets v1.1\ltvTickets\Database\obj\Debug\Database.sqlprojAssemblyReference.cache
+G:\manz\Guru\kalgisoft\ltvTickets v1.1\ltvTickets\Database\obj\Debug\Model.xml
+G:\manz\Guru\kalgisoft\ltvTickets v1.1\ltvTickets\Database\obj\Debug\refactor.xml
+G:\manz\Guru\kalgisoft\ltvTickets v1.1\ltvTickets\Database\obj\Debug\postdeploy.sql
+G:\manz\Guru\kalgisoft\ltvTickets v1.1\ltvTickets\Database\obj\Debug\predeploy.sql
+G:\manz\Guru\kalgisoft\ltvTickets v1.1\ltvTickets\Database\obj\Debug\Database.dll
+G:\manz\Guru\kalgisoft\ltvTickets v1.1\ltvTickets\Database\obj\Debug\Database.pdb
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Database\bin\Debug\Database.dacpac
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Database\bin\Debug\Database.dll
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Database\bin\Debug\Database.pdb
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Database\obj\Debug\Database.dll
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Database\obj\Debug\Database.pdb
+G:\progetti\blazor\ItvTicketsService\ItvTicketsService\Database\obj\Debug\Database.sqlproj.AssemblyReference.cache

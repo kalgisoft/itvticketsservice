@@ -1,0 +1,19 @@
+﻿** In evidenza
+     Tabelle che verranno ricompilate
+       Nessuno
+     Indici cluster che verranno eliminati
+       Nessuno
+     Indici cluster che verranno creati
+       Nessuno
+     Possibili problemi di dati
+       Nessuno
+
+** Azioni utente
+     Crea
+       [dbo].[LogTable] (Tabella)
+       [dbo].[spLog_Delete] (Routine)
+       [dbo].[spLog_GetOne] (Routine)
+       [dbo].[spLog_Insert] (Routine)
+       [dbo].[spLog_List] (Routine)
+
+** Azioni di supporto

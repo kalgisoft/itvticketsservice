@@ -1,0 +1,84 @@
+﻿@page "/contractorsaddedit/{Id:int}"
+@inject IContractorsService ContractorsService
+@inject NavigationManager NavigationManager
+
+<h1 style="text-align:center">@pagetitle</h1>
+
+<EditForm Model="@contractor" OnValidSubmit="@Save" class="form-inline">
+    <div class="container">
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>Name:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="contractor.Name" class='form-control' id='Name' />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 errormsg">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 buttons">
+                <button class="btn btn-primary" @onsubmit="@Save">@buttontext</button>
+                <button class="btn btn-secondary" @onclick="@Cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+
+    // Create a new, empty Contractor object
+    Contractor contractor = new Contractor();
+
+    [Parameter]
+    public int Id { get; set; }
+
+    // Set default page title and button text
+    public string pagetitle = "Add a Contractor";
+    public string buttontext = "Add";
+
+    //Executes on page open, set defaults on page.
+    protected override async Task OnInitializedAsync()
+    {
+        // ============ If the passed-in Id is zero, assume new Contractor.
+        if (Id == 0)
+        {
+            // Use this block to set for defaults (optional)
+        }
+        else
+        {
+            contractor = await ContractorsService.Contractors_GetOne(Id);
+            
+            pagetitle = "Edit Contractor";
+            buttontext = "Update";
+        }
+    }
+    // Executes OnValidSubmit of EditForm above.
+    protected async Task Save()
+    {
+        if (contractor.Id == 0)
+        {
+            // Insert if Id is zero.
+            await ContractorsService.ContractorsInsert(contractor);
+        }
+        else
+        {
+            // Update if Id not 0
+            await ContractorsService.ContractorsUpdate(contractor);
+        }
+        NavigationManager.NavigateTo("/contractorslist");
+    }
+
+    //Executes if user clicks the Cancel button.
+    protected void Cancel()
+    {
+        NavigationManager.NavigateTo("/contractorslist");
+    }
+}

@@ -1,0 +1,20 @@
+﻿** In evidenza
+     Tabelle che verranno ricompilate
+       Nessuno
+     Indici cluster che verranno eliminati
+       Nessuno
+     Indici cluster che verranno creati
+       Nessuno
+     Possibili problemi di dati
+       La colonna [dbo].[ApplicationUser].[CompanyName] viene eliminata. Possibile perdita dati.
+
+** Azioni utente
+     Modifica
+       [dbo].[ApplicationUser] (Tabella)
+     Crea
+       [dbo].[FK_ApplicationUser_ToPlant] (Chiave esterna)
+
+** Azioni di supporto
+
+La colonna [dbo].[ApplicationUser].[CompanyName] viene eliminata. Possibile perdita dati.
+

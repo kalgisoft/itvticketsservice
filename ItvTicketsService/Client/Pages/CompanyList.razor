@@ -1,0 +1,152 @@
+﻿@page "/companylist"
+@inject ICompanyService CompanyService
+@inject IDialogService _dialogService
+@inject NavigationManager NavigationManager
+
+
+<h1 style="text-align:center">Company List</h1>
+
+<MudDialog @bind-IsVisible="visible">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3" /> Error
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <p>@error</p>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit" Class="px-10">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<div class="container">
+    <main>
+
+        <div class="row g-5">
+            <p>@error</p>
+        </div>
+
+        <div class="row g-5">
+            <p>
+                <table id="search-add">
+                    <tr>
+                        <!-- Calling companyaddedit with Id of zero configures page for Insert -->
+                        <td>
+                            <MudLink Href="/companyaddedit/0">Add a Company</MudLink>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <!-- Back home -->
+                            <MudLink Href="/">Home</MudLink>
+                        </td>
+                    </tr>
+                </table>
+            </p>
+        </div>
+
+        <div class="row g-5">
+
+            @if (companies == null)
+            {
+                <p style="text-align:center"><img src="../images/loader.gif" /></p>
+            }
+            else
+            {
+                <MudTable Items="@companies" Hover="true" Breakpoint="Breakpoint.Sm" Loading="false">
+                    <HeaderContent>
+                        <MudTh>Edit</MudTh>
+                        <MudTh>Id</MudTh>
+                        <MudTh>Name</MudTh>
+                        <MudTh>Street Address</MudTh>
+                        <MudTh>City</MudTh>
+                        <MudTh>State</MudTh>
+                        <MudTh>Zip Code</MudTh>
+                        <MudTh>Email</MudTh>
+                        <MudTh>Phone</MudTh>
+                        <MudTh>Ticket Amount</MudTh>
+                        <MudTh>Delete</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Edit">
+                            <a href="companyaddedit/@context.Id">
+                                <MudIcon Icon="@Icons.Filled.Edit" Color="Color.Primary" Title="Edit" />
+                            </a>
+                        </MudTd>
+                        <MudTd DataLabel="Id">@context.Id</MudTd>
+                        <MudTd DataLabel="Name">@context.Name</MudTd>
+                        <MudTd DataLabel="Street Address">@context.StreetAddress</MudTd>
+                        <MudTd DataLabel="City">@context.City</MudTd>
+                        <MudTd DataLabel="State">@context.State</MudTd>
+                        <MudTd DataLabel="Zip Code">@context.ZipCode</MudTd>
+                        <MudTd DataLabel="Email">@context.Email</MudTd>
+                        <MudTd DataLabel="Phone">@context.Phone</MudTd>
+                        <MudTd DataLabel="Ticket Amount">@context.TicketAmount</MudTd>
+                        <MudTd DataLabel="Delete">
+                            <MudIconButton @onclick="@(() => Delete(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            }
+        </div>
+
+        <div class="row g-5">
+            <p></p>
+        </div>
+
+    </main>
+</div>
+       
+@code {
+
+    // Create an empty list, named companies, of empty Company objects.
+    List<Company> companies;
+    private bool visible = false;
+    private string error = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Populate the list of company objects from the Company table.
+        companies = await CompanyService.GetCompanyList();
+    }
+
+    //Executes if user confirms the deletion.
+    protected async Task Delete(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", $"Do you really want to delete company id={ id }? This process cannot be undone.");
+        parameters.Add("ButtonText", "Delete");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = _dialogService.Show<ItvModalDialog>("Delete", parameters, options);
+
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            try
+            {
+                await CompanyService.CompanyDelete(id);
+                //reload
+                await OnInitializedAsync();
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                OpenDialog();
+            }
+        }
+    }
+
+    private void OpenDialog() => visible = true;
+
+    void Submit()
+    {
+        error = string.Empty;
+        visible = false;
+    }
+}

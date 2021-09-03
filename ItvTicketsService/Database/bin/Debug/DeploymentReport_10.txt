@@ -1,0 +1,27 @@
+﻿** In evidenza
+     Tabelle che verranno ricompilate
+       [dbo].[Plant]
+     Indici cluster che verranno eliminati
+       Nessuno
+     Indici cluster che verranno creati
+       Nessuno
+     Possibili problemi di dati
+       Nessuno
+
+** Azioni utente
+     Ricompilazione tabella
+       [dbo].[Plant] (Tabella)
+
+** Azioni di supporto
+     Elimina
+       [dbo].[FK_Devices_Plant] (Chiave esterna)
+       [dbo].[FK_Plant_Company] (Chiave esterna)
+     Crea
+       [dbo].[FK_Devices_Plant] (Chiave esterna)
+       [dbo].[FK_Plant_Company] (Chiave esterna)
+     Aggiorna
+       [dbo].[spPlant_Delete] (Routine)
+       [dbo].[spPlant_GetOne] (Routine)
+       [dbo].[spPlant_Insert] (Routine)
+       [dbo].[spPlant_List] (Routine)
+       [dbo].[spPlant_Update] (Routine)

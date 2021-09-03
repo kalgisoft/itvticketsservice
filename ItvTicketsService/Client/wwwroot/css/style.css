@@ -1,0 +1,7 @@
+﻿.minheight0 {
+    min-height:20px !important;
+}
+.form-signin .validation-message {
+    margin-top: -20px;
+    margin-bottom: 15px;
+}

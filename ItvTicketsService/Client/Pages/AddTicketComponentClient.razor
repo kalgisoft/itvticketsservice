@@ -1,0 +1,145 @@
+﻿@inherits Index
+@inject ITicketService _ticketService
+
+<!--
+
+<div class="col-sm-4">
+    <div class="card mb-4">
+        <div class="card-body">
+            <EditForm Context="AddTicket" class="form-Ticket form-horizontal" OnValidSubmit="OnMySubmit" Model="_ticketService.TickettoInsert">
+                <DataAnnotationsValidator />
+                <label class="text-danger">@error</label>
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="small mb-1" for="inputReason">Reason</label>
+                            <InputText id="inputReason" class="form-control" @bind-Value="_ticketService.TickettoInsert.Reason" autofocus placeholder="Reason" />
+                            <ValidationMessage For="@(() => _ticketService.TickettoInsert.Reason)" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="small mb-1" for="inputPlantName">Select Plant</label>
+                            <select class="form-control selectpicker" @onchange="@BuildPlantDevices">
+                                @if (plants != null)
+                                {
+                                    <option value="-1">--select plant--</option>
+                                    @foreach (var pl in plants)
+                                    {
+                                        <option value="@pl.Id">@pl.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="small mb-1" for="inputDeviceName">Select Device</label>
+                            <select class="form-control selectpicker" @bind="_ticketService.TickettoInsert.DeviceId">
+                                @if (plantDevices != null)
+                                {
+                                    <option value="-1">--select device--</option>
+                                    @foreach (var dvc in plantDevices)
+                                    {
+                                        <option value="@dvc.Id">@dvc.Code</option>
+                                    }
+                                }
+                            </select>
+                            <ValidationMessage For="@(() => _ticketService.TickettoInsert.DeviceId)" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                            <button class="btn btn-primary" type="submit">Create Ticket</button>
+                        </div>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+-->
+
+<div class="col-sm-4">
+    <div class="card mb-4">
+        <div class="card-body">
+            <EditForm Context="AddTicket" class="form-Ticket form-horizontal" OnValidSubmit="OnMySubmit" Model="_ticketService.TickettoInsert">
+                <DataAnnotationsValidator />
+
+                <label class="text-danger">@error</label>
+
+                <div class="row">
+                    <div class='col-10'>
+                        <label class="small mb-1 col-10" for="inputReason">Reason</label>
+                        <InputText id="inputReason" class="form-control" @bind-Value="_ticketService.TickettoInsert.Reason" autofocus placeholder="Reason" />
+                        <ValidationMessage For="@(() => _ticketService.TickettoInsert.Reason)" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-10">
+                        <label class="small mb-1 col-10" for="inputPlantName">Select Plant</label>
+                        <select class="form-control selectpicker" @onchange="@BuildPlantDevices">
+                            @if (plants != null)
+                            {
+                                <option value="-1">--select plant--</option>
+                                @foreach (var pl in plants)
+                                {
+                                    <option value="@pl.Id">@pl.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-10">
+                        <label class="small mb-1 col-10" for="inputDeviceName">Select Device</label>
+                        <select class="form-control selectpicker" @bind="_ticketService.TickettoInsert.DeviceId">
+                            @if (plantDevices != null)
+                            {
+                                <option value="-1">--select device--</option>
+                                @foreach (var dvc in plantDevices)
+                                {
+                                    <option value="@dvc.Id">@dvc.Code</option>
+                                }
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => _ticketService.TickettoInsert.DeviceId)" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                            <button class="btn btn-primary" type="submit">Create Ticket</button>
+                        </div>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback<bool> OnRefreshParent { get; set; }
+
+    async Task OnMySubmit()
+    {
+        //per refresh
+        await OnRefreshParent.InvokeAsync(true);
+    }
+}

@@ -1,0 +1,95 @@
+﻿@page "/deviceimagesaddedit/{Code}"
+@inject IAzureStorageService _azureStorageService
+
+@using System.Net.Http.Headers;
+
+
+<h3>DeviceImagesAddEdit</h3>
+
+<div class="col-4">
+
+    @if (ImgUrl != null)
+    {
+        <img src="@ImgUrl" class="image-preview" />
+    }
+
+    <InputFile OnChange="@OnInputFileChanged" multiple></InputFile>
+
+    <MudTable Items="@filesList" Hover="true" SortLabel="Sort By" FixedHeader="true" Height="400px">
+        <HeaderContent>
+            <MudTh>Image</MudTh>
+            <MudTh>File Name</MudTh>
+            <MudTh>Delete</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Image"><img src="" class="image-preview" /></MudTd>
+            <MudTd DataLabel="File">@context</MudTd>
+            <MudTd DataLabel="Delete">
+                <MudButton @onclick="@(() => DeleteImageAsync(context))" Variant="Variant.Filled" Color="Color.Error">Delete</MudButton>          
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+
+</div>
+
+
+@code {
+    [Inject]
+    public HttpClient httpClient { get; set; }
+
+    [Parameter]
+    public string Code { get; set; }
+
+    public string ImgUrl { get; set; }
+
+    string img = string.Empty;
+    string imageName = string.Empty;
+
+    string stringImage = string.Empty;
+
+    public List<string> filesList = new List<string>();
+
+    string path1 = @"images/devices/";
+
+    //Executes on page open, set defaults on page.
+    protected override async Task OnInitializedAsync()
+    {
+        filesList = await _azureStorageService.GetContainerFileList("upload-container");
+        int kk = 0;
+    }
+
+    private void DeleteImageAsync(string imgName)
+    {
+        int kk = 0;
+
+    }
+
+
+    private async Task OnInputFileChanged(InputFileChangeEventArgs args)
+    {
+        var fileformat = "image/png";
+
+        var imageFiles = args.GetMultipleFiles();
+
+        foreach (var img in imageFiles)
+        {
+            if (img != null)
+            {
+                var resizedFile = await img.RequestImageFileAsync(fileformat, 300, 500);
+                using (var ms = resizedFile.OpenReadStream(resizedFile.Size))
+                {
+                    var content = new MultipartFormDataContent();
+                    content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+                    content.Add(new StreamContent(ms, Convert.ToInt32(resizedFile.Size)), "image", img.Name);
+
+                    //var response = await httpClient.PostAsync("upload", content);
+                    //ImgUrl = await response.Content.ReadAsStringAsync();
+
+                    ImgUrl = await _azureStorageService.FileUpload(content);
+                }
+            }
+        }
+
+        int kk = 0;
+    }
+}

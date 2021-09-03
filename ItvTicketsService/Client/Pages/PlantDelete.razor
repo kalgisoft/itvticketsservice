@@ -1,0 +1,55 @@
+﻿@page "/plantdelete/{Id:int}"
+@inject IPlantService PlantService
+@inject NavigationManager NavigationManager
+
+
+<h1 style="text-align:center">Delete a Plant</h1>
+<p style="color:red;text-align:center">Are you sure you want to permanently delete this plant? There is no undo!</p>
+
+<table class="genform">
+    <div class='form-group'>Name:@plant.Name</div>
+    <div class='form-group'>StreetAddress:@plant.StreetAddress</div>
+    <div class='form-group'>City:@plant.City</div>
+    <div class='form-group'>State:@plant.State</div>
+    <div class='form-group'>ZipCode:@plant.ZipCode</div>
+    <div class='form-group'>Email:@plant.Email</div>
+    <div class='form-group'>Phone:@plant.Phone</div>
+    <div class='form-group'>IdCompany:@plant.IdCompany</div>
+
+    <tr>
+        <td colspan="2" style="text-align:center">
+            <button class="btn btn-primary" @onclick="@Delete">Delete</button>
+            <button class="btn btn-secondary" @onclick="@Cancel">Cancel</button>
+        </td>
+    </tr>
+</table>
+
+@code {
+    // Create a new, empty Plant object
+    Plant plant = new Plant();
+
+    [Parameter]
+    public int Id { get; set; }
+
+    //Executes on page open..
+    protected override async Task OnInitializedAsync()
+    {
+        plant = await PlantService.Plant_GetOne(Id);
+    }
+    //Executes if user confirms the deletion.
+    protected async Task Delete()
+    {
+        // Delete the row and go back to the list.
+        // In the SProc you can set IsActive to 0 rather than physically delete.
+        await PlantService.PlantDelete(Id);
+
+        //reload
+        await OnInitializedAsync();
+    }
+
+    // Executes when user clicks the Cancel button.
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("/plantlist");
+    }
+}

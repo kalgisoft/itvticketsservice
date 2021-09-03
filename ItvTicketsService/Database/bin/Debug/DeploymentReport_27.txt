@@ -1,0 +1,52 @@
+﻿** In evidenza
+     Tabelle che verranno ricompilate
+       Nessuno
+     Indici cluster che verranno eliminati
+       Nessuno
+     Indici cluster che verranno creati
+       Nessuno
+     Possibili problemi di dati
+       Nessuno
+
+** Azioni utente
+     Crea
+       [dbo].[ApplicationRole] (Tabella)
+       [dbo].[ApplicationUser] (Tabella)
+       [dbo].[ApplicationUserRole] (Tabella)
+       [dbo].[Company] (Tabella)
+       [dbo].[DeviceInfo] (Tabella)
+       [dbo].[Devices] (Tabella)
+       [dbo].[Plant] (Tabella)
+       [dbo].[Tickets] (Tabella)
+       [dbo].[TicketStatusMaster] (Tabella)
+       [dbo].[DF_TicketStatusMaster_IsDeleted] (Vincolo predefinito)
+       [dbo].[FK_ApplicationUser_ToPlant] (Chiave esterna)
+       [dbo].[FK_ApplicationUserRole_Role] (Chiave esterna)
+       [dbo].[FK_ApplicationUserRole_User] (Chiave esterna)
+       [dbo].[FK_Devices_Plant] (Chiave esterna)
+       [dbo].[FK_Plant_Company] (Chiave esterna)
+       [dbo].[FK_Tickets_ToApplicationUserClient] (Chiave esterna)
+       [dbo].[FK_Tickets_ToApplicationUserTeam] (Chiave esterna)
+       [dbo].[FK_Tickets_ToDevices] (Chiave esterna)
+       [dbo].[FK_Tickets_ToApplicationUserCloser] (Chiave esterna)
+       [dbo].[FK__Tickets__TicketStatusMaster] (Chiave esterna)
+       [dbo].[spCompany_Delete] (Routine)
+       [dbo].[spCompany_GetOne] (Routine)
+       [dbo].[spCompany_Insert] (Routine)
+       [dbo].[spCompany_List] (Routine)
+       [dbo].[spCompany_Update] (Routine)
+       [dbo].[spDevice_Delete] (Routine)
+       [dbo].[spDevice_GetOne] (Routine)
+       [dbo].[spDevice_Insert] (Routine)
+       [dbo].[spDevice_List] (Routine)
+       [dbo].[spDevice_Update] (Routine)
+       [dbo].[spDeviceInfo_Upsert] (Routine)
+       [dbo].[spPlant_Delete] (Routine)
+       [dbo].[spPlant_GetOne] (Routine)
+       [dbo].[spPlant_Insert] (Routine)
+       [dbo].[spPlant_List] (Routine)
+       [dbo].[spPlant_Update] (Routine)
+       [dbo].[spTicket_GetOne] (Routine)
+       [dbo].[spUsers] (Routine)
+
+** Azioni di supporto

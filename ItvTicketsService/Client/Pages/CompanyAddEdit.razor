@@ -1,0 +1,221 @@
+﻿@page "/companyaddedit/{Id:int}"
+@inject ICompanyService CompanyService
+@inject NavigationManager NavigationManager
+
+<h1 style="text-align:center">@pagetitle</h1>
+
+<EditForm Model="@company" OnValidSubmit="@CompanySave" class="form-inline">
+    <div class="container">
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>Name:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="company.Name" class='form-control' id='Name' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>Street Adress:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="company.StreetAddress" class='form-control' id='Street' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>City:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="company.City" class='form-control' id='City' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>State:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="company.State" class='form-control' id='State' />
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>Zip Code:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="company.ZipCode" class='form-control' id='ZipCode' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>Email:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="company.Email" class='form-control' id='Email' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>Phone:</label>
+            </div>
+            <div class='col-4'>
+                <InputText @bind-Value="company.Phone" class='form-control' id='Phone' />
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-2'>
+                <label for='Name'>Ticket Amount:</label>
+            </div>
+            <div class='col-4'>
+                <InputNumber @bind-Value="company.TicketAmount" class='form-control' id='TicketAmount' />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 errormsg">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 buttons">
+                <button class="btn btn-primary" @onsubmit="@CompanySave">@buttontext</button>
+                <button class="btn btn-secondary" @onclick="@Cancel">Cancel</button>
+            </div>
+        </div>
+
+        <!-- You may want to change some type="" choices to better suit your own data
+    <div class='row'>
+
+        <div class='col-2'>
+            <label for='Name'>Name:</label>
+        </div>
+        <div class='col-4'>
+            <InputText @bind-Value="company.Name" class='form-control' id='Name' />
+        </div>
+
+        <div class='col-2'>
+            <label for='StreetAddress'>StreetAddress:</label>
+        </div>
+        <div class='col-4'>
+            <InputText @bind-Value="company.StreetAddress" class='form-control' id='StreetAddress' />
+        </div>
+
+        <div class='col-2'>
+            <label for='City'>City:</label>
+        </div>
+        <div class='col-4'>
+            <InputText @bind-Value="company.City" class='form-control' id='City' />
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-2'>
+            <label for='State'>State:</label>
+        </div>
+        <div class='col-4'>
+            <InputText @bind-Value="company.State" class='form-control' id='State' />
+        </div>
+        <div class='col-2'>
+            <label for='ZipCode'>ZipCode:</label>
+        </div>
+        <div class='col-4'>
+            <InputText @bind-Value="company.ZipCode" class='form-control' id='ZipCode' />
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-2'>
+            <label for='Email'>Email:</label>
+        </div>
+        <div class='col-4'>
+            <InputText @bind-Value="company.Email" class='form-control' id='Email' />
+        </div>
+        <div class='col-2'>
+            <label for='Phone'>Phone:</label>
+        </div>
+        <div class='col-4'>
+            <InputText @bind-Value="company.Phone" class='form-control' id='Phone' />
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-2'>
+            <label for='TicketAmount'>TicketAmount:</label>
+        </div>
+        <div class='col-4'>
+            <InputNumber @bind-Value="company.TicketAmount" class='form-control' id='TicketAmount' />
+        </div>
+
+
+        <div class="row">
+            <div class="col-12 errormsg">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 buttons">
+                <button class="btn btn-primary">@buttontext</button>
+                <button class="btn btn-secondary" @onclick="@Cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+    -->
+    </div>
+</EditForm>
+
+@code {
+    // Create a new, empty Company object
+    Company company = new Company();
+
+    [Parameter]
+    public int Id { get; set; }
+
+    // Set default page title and button text
+    public string pagetitle = "Add a Company";
+    public string buttontext = "Add";
+
+    //Executes on page open, set defaults on page.
+    protected override async Task OnInitializedAsync()
+    {
+        // ============ If the passed-in Id is zero, assume new Company.
+        if (Id == 0)
+        {
+            // Use this block to set for defaults (optional)
+        }
+        else
+        {
+            company = await CompanyService.Company_GetOne(Id);
+            // Change page title and button text since this is an edit.
+            pagetitle = "Edit Company";
+            buttontext = "Update";
+        }
+    }
+    // Executes OnValidSubmit of EditForm above.
+    protected async Task CompanySave()
+    {
+        if (company.Id == 0)
+        {
+            // Insert if Id is zero.
+            await CompanyService.CompanyInsert(company);
+        }
+        else
+        {
+            // Update if Id not 0
+            await CompanyService.CompanyUpdate(company);
+        }
+        NavigationManager.NavigateTo("/companylist");
+    }
+
+    //Executes if user clicks the Cancel button.
+    protected void Cancel()
+    {
+        NavigationManager.NavigateTo("/companylist");
+    }
+}

@@ -53,5 +53,17 @@ namespace ItvTicketsService.Client.Services
 
             //return false;
         }
+
+        public async Task UserInfo_ResetPassword(UserInfo user)
+        {
+            var result = await _httpClient.PostAsJsonAsync("api/UserInfo/Users_ResetPassword/", user);
+            if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            { 
+                throw new Exception(await result.Content.ReadAsStringAsync()); 
+            }
+            result.EnsureSuccessStatusCode();
+
+            //return false;
+        }
     }
 }

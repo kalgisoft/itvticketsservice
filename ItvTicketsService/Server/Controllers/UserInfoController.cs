@@ -17,11 +17,12 @@ namespace ItvTicketsService.Server.Controllers
     {
         private readonly IUserInfoStore<UserInfo> _userinfoStore;
         private readonly UserManager<ApplicationUser> _userManager;
-
-        public UserInfoController(IUserInfoStore<UserInfo> userinfoStore, UserManager<ApplicationUser> userManager)
+        private readonly ILogStore<Log> _logManager;
+        public UserInfoController(IUserInfoStore<UserInfo> userinfoStore, UserManager<ApplicationUser> userManager, ILogStore<Log> logManager)
         {
             _userinfoStore = userinfoStore;
             _userManager = userManager;
+            _logManager = logManager;
         }
 
         //Get Users List
@@ -80,6 +81,34 @@ namespace ItvTicketsService.Server.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError,
                       "Error retrieving data from database");
             }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Users_ResetPassword(UserInfo user)
+        {
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            var applicationUser = new ApplicationUser();
+            applicationUser.Id = user.Id;
+            applicationUser.UserName = user.UserName;
+            applicationUser.PlantId = 1;
+            string code = await _userManager.GeneratePasswordResetTokenAsync(applicationUser);
+            var result = await _userManager.ResetPasswordAsync(applicationUser, code, user.Password);
+            if (result.Succeeded == false)
+            {
+                return BadRequest(result.Errors.FirstOrDefault()?.Description);
+            }
+
+            Log lg = new Log();
+            lg.CreatedDate = DateTime.Now.ToString();
+            lg.UserId = user.Id;
+            lg.LogLevel = "Information";
+            lg.ExceptionMessage = "Password reset for Username=" + user.UserName;
+            await _logManager.LogInsert(lg);
+
+            return Ok();
         }
 
 

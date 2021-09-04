@@ -68,6 +68,7 @@ namespace ItvTicketsService.Server.Data
                 user.Id = users.First().Id;
                 user.UserName = users.First().UserName;
                 user.UserRole = users.First().UserRole;
+                user.UserRoleName = users.First().UserRoleName;
 
                 user.Plants = plants;
             }

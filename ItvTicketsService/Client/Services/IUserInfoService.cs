@@ -16,5 +16,7 @@ namespace ItvTicketsService.Client.Services
 
         Task<int> UserInfo_Upsert(int clientid, int plantid);
         Task<bool> UserInfo_ChangeRole(int clientid, int newRole);
+
+        Task UserInfo_ResetPassword(UserInfo user);
     }
 }

@@ -5,7 +5,7 @@ AS
 BEGIN
 -- SQL Select for one table row
 -- SELECT Id, UserName FROM ApplicationUser WHERE Id = @Id
-SELECT A.Id, A.UserName, B.RoleId as UserRole
-FROM ApplicationUser A, ApplicationUserRole B
-WHERE A.Id = @client AND A.Id = B.UserId
+SELECT A.Id, A.UserName, B.RoleId as UserRole, R.Name as UserRoleName
+FROM ApplicationUser A, ApplicationUserRole B, ApplicationRole R
+WHERE A.Id = @client AND A.Id = B.UserId AND B.RoleId = R.Id
 END

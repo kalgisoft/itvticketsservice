@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ItvTicketsService.Shared.Models
 {
-    public class UserInfo
+    public class ResetPasswordInfo
     {
         public int Id { get; set; }
 
@@ -13,11 +13,13 @@ namespace ItvTicketsService.Shared.Models
 
         //public int PlantId { get; set; }
 
-        public int UserRole { get; set; }
-
         public string UserRoleName { get; set; }
 
+        [Required]
+        public string Password { get; set; }
+        [Required] 
+        [Compare(nameof(Password), ErrorMessage = "Passwords do not match!")] 
+        public string ConfirmPassword { get; set; }
         public List<int> Plants { get; set; }
     }
-
 }

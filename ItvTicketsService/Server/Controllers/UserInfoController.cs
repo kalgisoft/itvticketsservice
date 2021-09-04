@@ -63,6 +63,35 @@ namespace ItvTicketsService.Server.Controllers
             }
         }
 
+        //Get UserInfo by id
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ResetPasswordInfo>> GetResetPasswordInfo(int id)
+        {
+            try
+            {
+                var result = await _userinfoStore.UserInfo_GetOne(id);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                ResetPasswordInfo resetPasswordInfo = new ResetPasswordInfo
+                {
+                    Id = result.Id,
+                    UserName = result.UserName,
+                    UserRoleName = result.UserRoleName,
+                    Plants = result.Plants
+                };
+                return Ok(resetPasswordInfo);
+            }
+            catch (Exception ex)
+            {
+                string sss = ex.Message;
+
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from database");
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<int>> Users_Upsert(List<int> param)
         {
@@ -84,29 +113,22 @@ namespace ItvTicketsService.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Users_ResetPassword(UserInfo user)
+        public async Task<ActionResult> Users_ResetPassword(ResetPasswordInfo resetPasswordInfo)
         {
-            if (user == null)
+            if (resetPasswordInfo == null)
             {
                 return BadRequest();
             }
             var applicationUser = new ApplicationUser();
-            applicationUser.Id = user.Id;
-            applicationUser.UserName = user.UserName;
-            applicationUser.PlantId = 1;
+            applicationUser.Id = resetPasswordInfo.Id;
+            applicationUser.UserName = resetPasswordInfo.UserName;
+            applicationUser.PlantId = resetPasswordInfo.Plants != null && resetPasswordInfo.Plants.Any() ? resetPasswordInfo.Plants.First() : 1;
             string code = await _userManager.GeneratePasswordResetTokenAsync(applicationUser);
-            var result = await _userManager.ResetPasswordAsync(applicationUser, code, user.Password);
+            var result = await _userManager.ResetPasswordAsync(applicationUser, code, resetPasswordInfo.Password);
             if (result.Succeeded == false)
             {
                 return BadRequest(result.Errors.FirstOrDefault()?.Description);
             }
-
-            Log lg = new Log();
-            lg.CreatedDate = DateTime.Now.ToString();
-            lg.UserId = user.Id;
-            lg.LogLevel = "Information";
-            lg.ExceptionMessage = "Password reset for Username=" + user.UserName;
-            await _logManager.LogInsert(lg);
 
             return Ok();
         }

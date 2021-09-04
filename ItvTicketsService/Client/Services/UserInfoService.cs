@@ -26,6 +26,11 @@ namespace ItvTicketsService.Client.Services
              return await _httpClient.GetFromJsonAsync<List<UserInfo>>("api/UserInfo/GetUsers/" + roleId.ToString());
         }
 
+        public async Task<ResetPasswordInfo> GetResetPasswordInfo(int id)
+        {
+            return await _httpClient.GetFromJsonAsync<ResetPasswordInfo>("api/UserInfo/GetResetPasswordInfo/" + id.ToString()); ;
+        }
+
         public async Task<UserInfo> UserInfo_GetOne(int id)
         {
             return await _httpClient.GetFromJsonAsync<UserInfo>("api/UserInfo/Users_GetOne/" + id.ToString()); ;
@@ -54,9 +59,9 @@ namespace ItvTicketsService.Client.Services
             //return false;
         }
 
-        public async Task UserInfo_ResetPassword(UserInfo user)
+        public async Task UserInfo_ResetPassword(ResetPasswordInfo resetPasswordInfo)
         {
-            var result = await _httpClient.PostAsJsonAsync("api/UserInfo/Users_ResetPassword/", user);
+            var result = await _httpClient.PostAsJsonAsync("api/UserInfo/Users_ResetPassword/", resetPasswordInfo);
             if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
             { 
                 throw new Exception(await result.Content.ReadAsStringAsync()); 

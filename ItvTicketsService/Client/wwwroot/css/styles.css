@@ -10916,3 +10916,8 @@ body {
         color: #212529;
         text-decoration:underline;
     }
+.image-preview {
+    float: left;
+    width: 150px;
+    height: 250px;
+}

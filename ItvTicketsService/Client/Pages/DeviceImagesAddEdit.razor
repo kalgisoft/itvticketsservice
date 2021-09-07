@@ -2,37 +2,53 @@
 @inject IAzureStorageService _azureStorageService
 
 @using System.Net.Http.Headers;
+@using System.IO;
+<div class="container-fluid container-height">
+    <div class="col-sm-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table mr-1"></i>
+                Add/Edit Device Images
+            </div>
 
-
-<h3>DeviceImagesAddEdit</h3>
-
-<div class="col-4">
-
-    @if (ImgUrl != null)
-    {
-        <img src="@ImgUrl" class="image-preview" />
-    }
-
-    <InputFile OnChange="@OnInputFileChanged" multiple></InputFile>
-
-    <MudTable Items="@filesList" Hover="true" SortLabel="Sort By" FixedHeader="true" Height="400px">
-        <HeaderContent>
-            <MudTh>Image</MudTh>
-            <MudTh>File Name</MudTh>
-            <MudTh>Delete</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Image"><img src="" class="image-preview" /></MudTd>
-            <MudTd DataLabel="File">@context</MudTd>
-            <MudTd DataLabel="Delete">
-                <MudButton @onclick="@(() => DeleteImageAsync(context))" Variant="Variant.Filled" Color="Color.Error">Delete</MudButton>          
-            </MudTd>
-        </RowTemplate>
-    </MudTable>
-
+            <div class="card-body">
+                <div class="table-responsive">
+                    <div class="row no-gutters p-2">
+                        <div class="col-md-12">
+                            @if (ImgUrl != null)
+                            {
+                                <img src="@ImgUrl" class="image-preview" height="250" width="150" />
+                            }
+                        </div>
+                    </div>
+                    <div class="row no-gutters p-2">
+                        <div class="col-md-12">
+                            <InputFile OnChange="@OnInputFileChanged" multiple></InputFile>
+                        </div>
+                    </div>
+                    <div class="row no-gutters p-2">
+                        <div class="col-md-12">
+                            <MudTable Items="@filesList" Hover="true" SortLabel="Sort By" FixedHeader="true" Height="650px">
+                                <HeaderContent>
+                                    <MudTh>Image</MudTh>
+                                    <MudTh>File Name</MudTh>
+                                    <MudTh>Delete</MudTh>
+                                </HeaderContent>
+                                <RowTemplate>
+                                    <MudTd DataLabel="Image"><img src="@context" class="image-preview" width="60" height="100" /></MudTd>
+                                    <MudTd DataLabel="File">@Path.GetFileName(context)</MudTd>
+                                    <MudTd DataLabel="Delete">
+                                        <MudButton @onclick="@(() => DeleteImageAsync(context))" Variant="Variant.Filled" Color="Color.Error">Delete</MudButton>
+                                    </MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+        </div>
+    </div>
 </div>
-
-
 @code {
     [Inject]
     public HttpClient httpClient { get; set; }
@@ -55,41 +71,41 @@
     protected override async Task OnInitializedAsync()
     {
         filesList = await _azureStorageService.GetContainerFileList("upload-container");
-        int kk = 0;
+        ImgUrl = @"/images/Preview.png";
     }
 
-    private void DeleteImageAsync(string imgName)
+    private async void DeleteImageAsync(string imgName)
     {
-        int kk = 0;
-
+        await _azureStorageService.DeleteFile(Path.GetFileName(imgName));
+        filesList = await _azureStorageService.GetContainerFileList("upload-container");
+        ImgUrl = @"/images/Preview.png";
+        InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
     }
 
 
-    private async Task OnInputFileChanged(InputFileChangeEventArgs args)
+    private async Task OnInputFileChanged(InputFileChangeEventArgs e)
     {
         var fileformat = "image/png";
+        var imageFile = e.File;
 
-        var imageFiles = args.GetMultipleFiles();
+        if (imageFile == null)
+            return;
 
-        foreach (var img in imageFiles)
+        var resizedFile = await imageFile.RequestImageFileAsync(fileformat, 300, 500);
+
+        using (var ms = resizedFile.OpenReadStream(resizedFile.Size))
         {
-            if (img != null)
-            {
-                var resizedFile = await img.RequestImageFileAsync(fileformat, 300, 500);
-                using (var ms = resizedFile.OpenReadStream(resizedFile.Size))
-                {
-                    var content = new MultipartFormDataContent();
-                    content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
-                    content.Add(new StreamContent(ms, Convert.ToInt32(resizedFile.Size)), "image", img.Name);
+            var content = new MultipartFormDataContent();
+            content.Headers.ContentDisposition =
+                new ContentDispositionHeaderValue("form-data");
+            content.Add(new StreamContent(ms, Convert.ToInt32(resizedFile.Size)),
+                "image", imageFile.Name);
 
-                    //var response = await httpClient.PostAsync("upload", content);
-                    //ImgUrl = await response.Content.ReadAsStringAsync();
-
-                    ImgUrl = await _azureStorageService.FileUpload(content);
-                }
-            }
+            ImgUrl = await _azureStorageService.FileUpload(content);
+            filesList = await _azureStorageService.GetContainerFileList("upload-container");
         }
-
-        int kk = 0;
     }
 }

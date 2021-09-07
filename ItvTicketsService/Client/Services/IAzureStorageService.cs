@@ -10,7 +10,7 @@ namespace ItvTicketsService.Client.Services
     {
         Task<List<string>> GetContainerList();
         Task<List<string>> GetContainerFileList(string container);
-        Task<string> FileUpload(MultipartFormDataContent obj);
+        Task<string> FileUpload(MultipartFormDataContent content);
         Task<HttpResponseMessage> DeleteFile(string blobName);
     }
 }

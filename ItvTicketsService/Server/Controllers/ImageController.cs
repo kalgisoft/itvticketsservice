@@ -1,6 +1,10 @@
-﻿using ItvTicketsService.Server.Logics;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using ItvTicketsService.Server.Logics;
 using ItvTicketsService.Server.Models;
+using ItvTicketsService.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +26,27 @@ namespace ItvTicketsService.Server.Controllers
 
         [Route("upload")]
         [HttpPost]
-        public async Task<IActionResult> Upload([FromForm] FileModel model)
+        public async Task<IActionResult> Upload()
         {
-            if (model.ImageFile != null)
+            try
             {
-                await _fileManagerLogic.Upload(model);
+                var formCollection = await Request.ReadFormAsync();
+                var file = formCollection.Files.First();
+                
+                if (file.Length > 0)
+                {
+                    FileModel fileModel = new FileModel();
+                    fileModel.ImageFile = file;
+                    var imgUrl = await _fileManagerLogic.Upload(fileModel);
+                    return Ok(imgUrl);
+                }
+
+                return BadRequest();
             }
-            return Ok();
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
         }
 
         [Route("get")]
@@ -52,10 +70,10 @@ namespace ItvTicketsService.Server.Controllers
         }
 
         [Route("delete")]
-        [HttpGet]
-        public async Task<IActionResult> Delete(string fileName)
+        [HttpPost]
+        public async Task<IActionResult> Delete(DeviceImageFile deviceImageFile)
         {
-            await _fileManagerLogic.Delete(fileName);
+            await _fileManagerLogic.Delete(deviceImageFile.Name);
             return Ok();
         }
 

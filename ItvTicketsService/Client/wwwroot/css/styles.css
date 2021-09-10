@@ -10921,3 +10921,6 @@ body {
     width: 150px;
     height: 250px;
 }
+.image-preview:hover {
+    transform: scale(1.10)
+}

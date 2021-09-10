@@ -1,5 +1,6 @@
 ﻿@page "/deviceimagesaddedit/{Code}"
 @inject IAzureStorageService _azureStorageService
+@inject IDialogService DialogService
 
 @using System.Net.Http.Headers;
 @using System.IO;
@@ -35,7 +36,7 @@
                                     <MudTh>Delete</MudTh>
                                 </HeaderContent>
                                 <RowTemplate>
-                                    <MudTd DataLabel="Image"><img src="@context" class="image-preview" width="60" height="100" /></MudTd>
+                                    <MudTd DataLabel="Image" @onclick="@(() => OpenDialog(context))"><img src="@context" class="image-preview" width="60" height="100" /></MudTd>
                                     <MudTd DataLabel="File">@Path.GetFileName(context)</MudTd>
                                     <MudTd DataLabel="Delete">
                                         <MudButton @onclick="@(() => DeleteImageAsync(context))" Variant="Variant.Filled" Color="Color.Error">Delete</MudButton>
@@ -44,8 +45,8 @@
                             </MudTable>
                         </div>
                     </div>
-                    </div>
                 </div>
+            </div>
         </div>
     </div>
 </div>
@@ -107,5 +108,14 @@
             ImgUrl = await _azureStorageService.FileUpload(content);
             filesList = await _azureStorageService.GetContainerFileList("upload-container");
         }
+    }
+
+    [Parameter]
+    public string ImageDetails { get; set; }
+
+    private async void OpenDialog(string path)
+    {
+        var parameters = new DialogParameters { { "ImageDetails", path } };
+        DialogService.Show<ImageDialog>("Preview", parameters);
     }
 }

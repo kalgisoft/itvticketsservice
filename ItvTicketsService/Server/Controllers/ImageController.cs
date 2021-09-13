@@ -1,10 +1,8 @@
-﻿using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
-using ItvTicketsService.Server.Logics;
+﻿using ItvTicketsService.Server.Logics;
 using ItvTicketsService.Server.Models;
 using ItvTicketsService.Shared.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +12,7 @@ namespace ItvTicketsService.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
 
     public class ImageController : ControllerBase
     {

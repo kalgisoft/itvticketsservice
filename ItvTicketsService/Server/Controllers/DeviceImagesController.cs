@@ -1,19 +1,18 @@
-﻿using System.IO;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Net.Http;
-using System.Net;
-using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Hosting;
 
 namespace ItvTicketsService.Server.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class DeviceImagesController : ControllerBase
     {
         private readonly IWebHostEnvironment _webHostEnvironment;

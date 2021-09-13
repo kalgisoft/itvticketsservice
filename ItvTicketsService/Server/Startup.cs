@@ -1,21 +1,20 @@
-using ItvTicketsService.Shared.Models;
+using Azure.Storage.Blobs;
 using ItvTicketsService.Server.Data;
 using ItvTicketsService.Server.Logging;
+using ItvTicketsService.Server.Logics;
 using ItvTicketsService.Server.Models;
+using ItvTicketsService.Shared.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.Linq;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Threading.Tasks;
-using Azure.Storage.Blobs;
-using ItvTicketsService.Server.Services;
-using ItvTicketsService.Server.Logics;
 
 namespace ItvTicketsService.Server
 {
@@ -44,7 +43,25 @@ namespace ItvTicketsService.Server
             services.AddTransient<ILogStore<Log>, LogStore>();
 
             services.AddIdentity<ApplicationUser, ApplicationRole>()
-                .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders();
+
+            var jwtSettings = Configuration.GetSection("JWTSettings");
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["securityKey"]))
+                };
+            });
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.HttpOnly = false;
@@ -55,14 +72,10 @@ namespace ItvTicketsService.Server
                 };
             });
 
-            //services.AddControllers().AddNewtonsoftJson();
-            //string conn = Configuration.GetValue<string>("AzureConnectionString");
             string conn = Configuration.GetConnectionString("AzureConnectionString");
 
-            //services.AddSingleton(x => new BlobServiceClient(conn));
-            //services.AddSingleton<IBlobService, BlobService>();
-
-            services.AddScoped(_ => {
+            services.AddScoped(_ =>
+            {
                 return new BlobServiceClient(conn);
             });
             services.AddScoped<IFileManagerLogic, FileManagerLogic>();

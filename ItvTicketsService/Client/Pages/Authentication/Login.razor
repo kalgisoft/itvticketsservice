@@ -1,6 +1,5 @@
 ﻿@page "/login"
 @layout AuthLayout
-@inject CustomStateProvider authStateProvider
 @inject NavigationManager navigationManager
 
 
@@ -8,24 +7,24 @@
     <div class="card shadow-lg border-0 rounded-lg mt-5">
         <div class="card-header"><h3 class="text-center font-weight-light">Login</h3></div>
         <div class="card-body">
-            <EditForm class="form-signin form-horizontal" OnValidSubmit="OnSubmit" Model="loginRequest">
+            <EditForm class="form-signin form-horizontal" OnValidSubmit="ExecuteLogin" Model="_userForAuthentication">
                 <DataAnnotationsValidator />
-                <label class="text-danger">@error</label>
+                <label class="text-danger">@Error</label>
                 <div class="form-group">
                     <label class="small mb-1" for="inputUsername">Username</label>
-                    <InputText id="inputUsername" class="form-control" @bind-Value="loginRequest.UserName" autofocus placeholder="Username" />
+                    <InputText id="inputUsername" class="form-control" @bind-Value="_userForAuthentication.UserName" autofocus placeholder="Username" />
 
-                    <ValidationMessage For="@(() => loginRequest.UserName)" />
+                    <ValidationMessage For="@(() => _userForAuthentication.UserName)" />
                 </div>
                 <div class="form-group">
                     <label class="small mb-1" for="inputPassword">Password</label>
-                    <InputText type="password" id="inputPassword" class="form-control" placeholder="Password" @bind-Value="loginRequest.Password" />
+                    <InputText type="password" id="inputPassword" class="form-control" placeholder="Password" @bind-Value="_userForAuthentication.Password" />
 
-                    <ValidationMessage For="@(() => loginRequest.Password)" />
+                    <ValidationMessage For="@(() => _userForAuthentication.Password)" />
                 </div>
                 <div class="form-group">
                     <div class="custom-control custom-checkbox">
-                        <InputCheckbox id="inputRememberMe" class="minheight0 checkbox form-check-input" @bind-Value="@loginRequest.RememberMe" /> Remember password
+                        <InputCheckbox id="inputRememberMe" class="minheight0 checkbox form-check-input" @bind-Value="@_userForAuthentication.RememberMe" /> Remember password
                     </div>
                 </div>
                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
@@ -37,27 +36,25 @@
 </div>
 
 @code {
-    /// <summary>
-    /// Login model
-    /// </summary>
-    LoginRequest loginRequest { get; set; } = new LoginRequest();
-    string error { get; set; }
-
-    /// <summary>
-    /// Login method, takes username and password and validates login
-    /// </summary>
-    /// <returns></returns>
-    async Task OnSubmit()
+    private UserForAuthenticationDto _userForAuthentication = new UserForAuthenticationDto();
+    [Inject]
+    public IAuthService AuthService { get; set; }
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+    public bool ShowAuthError { get; set; }
+    public string Error { get; set; }
+    public async Task ExecuteLogin()
     {
-        error = null;
-        try
+        ShowAuthError = false;
+        var result = await AuthService.Login(_userForAuthentication);
+        if (!result.IsAuthSuccessful)
         {
-            await authStateProvider.Login(loginRequest);
-            navigationManager.NavigateTo("");
+            Error = result.ErrorMessage;
+            ShowAuthError = true;
         }
-        catch (Exception ex)
+        else
         {
-            error = ex.Message;
+            NavigationManager.NavigateTo("/");
         }
     }
 }

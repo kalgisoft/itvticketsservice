@@ -1,7 +1,6 @@
 ﻿@page "/register"
 @layout AuthLayout
 @inject NavigationManager navigationManager
-@inject CustomStateProvider authStateProvider
 @inject IPlantService PlantService
 
 <AuthorizeView Roles="Admin">
@@ -80,6 +79,8 @@
         plants = await PlantService.GetPlantList();
     }
 
+    [Inject]
+    public IAuthService AuthService { get; set; }
     /// <summary>
     /// Valdiates user and register new user. takes user details as input.
     /// </summary>
@@ -88,7 +89,7 @@
     {
         try
         {
-            await authStateProvider.Register(registerRequest);
+            await AuthService.Register(registerRequest);
             error = "User registered successfully.";
             navigationManager.NavigateTo("/register");
         }

@@ -1,6 +1,7 @@
 ﻿using ItvTicketsService.Server.Data;
 using ItvTicketsService.Server.Models;
 using ItvTicketsService.Shared.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ namespace ItvTicketsService.Server.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class DeviceController : ControllerBase
     {
         private readonly IDeviceStore<Device> _deviceStore;

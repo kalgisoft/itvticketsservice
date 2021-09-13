@@ -1,6 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject NavigationManager navigationManager
-@inject CustomStateProvider authStateProvider
 
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
 
@@ -44,7 +42,10 @@
 
 
 @functions{
-
+    [Inject]
+    public IAuthService AuthService { get; set; }
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
     [CascadingParameter]
     Task<AuthenticationState> AuthenticationState { get; set; }
 
@@ -52,13 +53,13 @@
     {
         if (!(await AuthenticationState).User.Identity.IsAuthenticated)
         {
-            navigationManager.NavigateTo("/login");
+            NavigationManager.NavigateTo("/login");
         }
     }
 
     async Task LogoutClick()
     {
-        await authStateProvider.Logout();
-        navigationManager.NavigateTo("/login");
+        await AuthService.Logout();
+        NavigationManager.NavigateTo("/login");
     }
 }

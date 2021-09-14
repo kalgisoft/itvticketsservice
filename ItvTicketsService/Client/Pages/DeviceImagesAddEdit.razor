@@ -71,14 +71,14 @@
     //Executes on page open, set defaults on page.
     protected override async Task OnInitializedAsync()
     {
-        filesList = await _azureStorageService.GetContainerFileList("upload-container");
+        filesList = await _azureStorageService.GetContainerFileList("upload-container", Code);
         ImgUrl = @"/images/Preview.png";
     }
 
     private async void DeleteImageAsync(string imgName)
     {
-        await _azureStorageService.DeleteFile(Path.GetFileName(imgName));
-        filesList = await _azureStorageService.GetContainerFileList("upload-container");
+        await _azureStorageService.DeleteFile(Path.GetFileName(imgName), Code);
+        filesList = await _azureStorageService.GetContainerFileList("upload-container", Code);
         ImgUrl = @"/images/Preview.png";
         InvokeAsync(() =>
         {
@@ -104,9 +104,9 @@
                 new ContentDispositionHeaderValue("form-data");
             content.Add(new StreamContent(ms, Convert.ToInt32(resizedFile.Size)),
                 "image", imageFile.Name);
-
-            ImgUrl = await _azureStorageService.FileUpload(content);
-            filesList = await _azureStorageService.GetContainerFileList("upload-container");
+            
+            ImgUrl = await _azureStorageService.FileUpload(content,Code);
+            filesList = await _azureStorageService.GetContainerFileList("upload-container", Code);
         }
     }
 

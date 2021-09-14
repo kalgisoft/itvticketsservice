@@ -9,8 +9,8 @@ namespace ItvTicketsService.Client.Services
     interface IAzureStorageService
     {
         Task<List<string>> GetContainerList();
-        Task<List<string>> GetContainerFileList(string container);
-        Task<string> FileUpload(MultipartFormDataContent content);
-        Task<HttpResponseMessage> DeleteFile(string blobName);
+        Task<List<string>> GetContainerFileList(string container, string folder);
+        Task<string> FileUpload(MultipartFormDataContent content, string folder);
+        Task<HttpResponseMessage> DeleteFile(string blobName, string folder);
     }
 }

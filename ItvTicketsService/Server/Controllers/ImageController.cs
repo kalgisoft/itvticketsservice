@@ -30,12 +30,14 @@ namespace ItvTicketsService.Server.Controllers
             try
             {
                 var formCollection = await Request.ReadFormAsync();
+                var folder = Request.Headers["folder"];
                 var file = formCollection.Files.First();
                 
                 if (file.Length > 0)
                 {
                     FileModel fileModel = new FileModel();
                     fileModel.ImageFile = file;
+                    fileModel.Folder = folder;
                     var imgUrl = await _fileManagerLogic.Upload(fileModel);
                     return Ok(imgUrl);
                 }
@@ -72,15 +74,15 @@ namespace ItvTicketsService.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(DeviceImageFile deviceImageFile)
         {
-            await _fileManagerLogic.Delete(deviceImageFile.Name);
+            await _fileManagerLogic.Delete(deviceImageFile.Name, deviceImageFile.Folder);
             return Ok();
         }
 
         [Route("list")]
         [HttpGet]
-        public async Task<ActionResult<List<string>>> List(string container)
+        public async Task<ActionResult<List<string>>> List(string container, string folder)
         {
-            return Ok(await _fileManagerLogic.List(container));
+            return Ok(await _fileManagerLogic.List(container, folder));
         }
 
     }

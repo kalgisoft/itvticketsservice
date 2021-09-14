@@ -19,19 +19,21 @@ namespace ItvTicketsService.Client.Services
             _httpClient = httpClient;
         }
 
-        public async Task<HttpResponseMessage> DeleteFile(string blobName)
+        public async Task<HttpResponseMessage> DeleteFile(string blobName, string folder)
         {
             DeviceImageFile deviceImageFile = new DeviceImageFile();
             deviceImageFile.Name = blobName;
+            deviceImageFile.Folder = folder;
             return await _httpClient.PostAsJsonAsync("api/Image/Delete", deviceImageFile);
         }
 
 
-        public async Task<string> FileUpload(MultipartFormDataContent content)
+        public async Task<string> FileUpload(MultipartFormDataContent content, string folder)
         {
             string imgUrl = string.Empty;
             try
             {
+                _httpClient.DefaultRequestHeaders.Add("folder", folder);
                 var response = await _httpClient.PostAsync("api/Image/upload", content);
                 imgUrl = await response.Content.ReadAsStringAsync();
             }
@@ -42,9 +44,9 @@ namespace ItvTicketsService.Client.Services
             return imgUrl;
         }
 
-        public async Task<List<string>> GetContainerFileList(string container)
+        public async Task<List<string>> GetContainerFileList(string container, string folder)
         {
-            var res = await _httpClient.GetFromJsonAsync<List<string>>("api/Image/List?container=" + container);
+            var res = await _httpClient.GetFromJsonAsync<List<string>>("api/Image/List?container=" + container + "&folder=" + folder );
             return res;
         }
 

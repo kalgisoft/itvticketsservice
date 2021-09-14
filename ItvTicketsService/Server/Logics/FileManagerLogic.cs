@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
+
 namespace ItvTicketsService.Server.Logics
 {
     public class FileManagerLogic : IFileManagerLogic
@@ -28,7 +29,7 @@ namespace ItvTicketsService.Server.Logics
                 if (createResponse != null && createResponse.GetRawResponse().Status == 201)
                     await blobContainer.SetAccessPolicyAsync(PublicAccessType.Blob);
 
-                var blobClient = blobContainer.GetBlobClient(model.ImageFile.FileName);
+                var blobClient = blobContainer.GetBlobClient(Path.Combine(@model.Folder, @model.ImageFile.FileName));
                 await blobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
 
                 using (var fileStream = model.ImageFile.OpenReadStream())
@@ -37,7 +38,7 @@ namespace ItvTicketsService.Server.Logics
                 }
                 return blobClient.Uri.ToString();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var msg = ex.Message;
             }
@@ -57,20 +58,21 @@ namespace ItvTicketsService.Server.Logics
             }
         }
 
-        public async Task Delete(string imageName)
+        public async Task Delete(string imageName, string folder)
         {
             var blobContainer = _blobServiceClient.GetBlobContainerClient("upload-container");
 
-            var blobClient = blobContainer.GetBlobClient(imageName);
+            var blobClient = blobContainer.GetBlobClient(Path.Combine(@folder, @imageName));
 
             await blobClient.DeleteAsync();
         }
 
-        public async Task<List<string>> List(string container)
+        public async Task<List<string>> List(string container, string folder)
         {
+
             var containerClient = _blobServiceClient.GetBlobContainerClient(container);
             var items = new List<string>();
-            await foreach (var blobItem in containerClient.GetBlobsAsync())
+            await foreach (var blobItem in containerClient.GetBlobsAsync(prefix: folder))
             {
                 items.Add(string.Format("{0}/{1}",
                         containerClient.Uri.AbsoluteUri,
@@ -80,4 +82,8 @@ namespace ItvTicketsService.Server.Logics
             return items;
         }
     }
+
+
+
+
 }

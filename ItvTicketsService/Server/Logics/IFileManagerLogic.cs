@@ -10,7 +10,7 @@ namespace ItvTicketsService.Server.Logics
     {
         Task<string> Upload(FileModel model);
         Task<byte[]> Get(string imageName);
-        Task Delete(string imageName);
-        Task<List<string>> List(string container);
+        Task Delete(string imageName, string folder);
+        Task<List<string>> List(string container, string folder);
     }
 }

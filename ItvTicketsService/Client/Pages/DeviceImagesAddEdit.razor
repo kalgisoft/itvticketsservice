@@ -20,6 +20,7 @@
                             {
                                 <img src="@ImgUrl" class="image-preview" height="250" width="150" />
                             }
+                            <label class="text-danger">@error</label>
                         </div>
                     </div>
                     <div class="row no-gutters p-2">
@@ -36,7 +37,22 @@
                                     <MudTh>Delete</MudTh>
                                 </HeaderContent>
                                 <RowTemplate>
-                                    <MudTd DataLabel="Image" @onclick="@(() => OpenDialog(context))"><img src="@context" class="image-preview" width="60" height="100" /></MudTd>
+                                    @if (context.IndexOf(".pdf") > 0)
+                                    {
+                                        <MudTd DataLabel="Image" >
+                                            <a href="@context" target="_blank">
+                                                <img src="@GetImage(context)" class="image-preview" width="60" height="100" />
+                                            </a>
+                                        </MudTd>
+                                    }
+                                    else
+                                    {
+                                        <MudTd DataLabel="Image" @onclick="(() => OpenDialog(context))">
+                                            <img src="@GetImage(context)" class="image-preview" width="60" height="100" />
+                                        </MudTd>
+                                    }
+
+
                                     <MudTd DataLabel="File">@Path.GetFileName(context)</MudTd>
                                     <MudTd DataLabel="Delete">
                                         <MudButton @onclick="@(() => DeleteImageAsync(context))" Variant="Variant.Filled" Color="Color.Error">Delete</MudButton>
@@ -51,11 +67,11 @@
     </div>
 </div>
 @code {
-    [Inject]
-    public HttpClient httpClient { get; set; }
+        [Inject]
+        public HttpClient httpClient { get; set; }
 
-    [Parameter]
-    public string Code { get; set; }
+        [Parameter]
+        public string Code { get; set; }
 
     public string ImgUrl { get; set; }
 
@@ -67,12 +83,22 @@
     public List<string> filesList = new List<string>();
 
     string path1 = @"images/devices/";
+    string error { get; set; }
 
     //Executes on page open, set defaults on page.
     protected override async Task OnInitializedAsync()
     {
         filesList = await _azureStorageService.GetContainerFileList("upload-container", Code);
         ImgUrl = @"/images/Preview.png";
+    }
+
+    private string GetImage(string filepath)
+    {
+        if (filepath.IndexOf(".pdf") > 0)
+        {
+            return @"/images/PDF.png";
+        }
+        return filepath;
     }
 
     private async void DeleteImageAsync(string imgName)
@@ -89,23 +115,44 @@
 
     private async Task OnInputFileChanged(InputFileChangeEventArgs e)
     {
-        var fileformat = "image/png";
-        var imageFile = e.File;
+        //var fileformat = "image/png";
+        var File = e.File;
 
-        if (imageFile == null)
+        if (File == null)
             return;
 
-        var resizedFile = await imageFile.RequestImageFileAsync(fileformat, 300, 500);
-
-        using (var ms = resizedFile.OpenReadStream(resizedFile.Size))
+        long fileSize = 0;
+        if (e.File.ContentType == "image/png" || e.File.ContentType == "image/jpeg")
+        {
+            var resizedFile = await File.RequestImageFileAsync(e.File.ContentType, 300, 500);
+            fileSize = resizedFile.Size;
+        }
+        else if (e.File.ContentType == "application/pdf")
+        {
+            fileSize = File.Size;
+        }
+        else
+        {
+            error = "Incorrect file type";
+            return;
+        }
+        using (var ms = File.OpenReadStream(100 * 1024 * 1024))
         {
             var content = new MultipartFormDataContent();
             content.Headers.ContentDisposition =
                 new ContentDispositionHeaderValue("form-data");
-            content.Add(new StreamContent(ms, Convert.ToInt32(resizedFile.Size)),
-                "image", imageFile.Name);
-            
-            ImgUrl = await _azureStorageService.FileUpload(content,Code);
+            content.Add(new StreamContent(ms, Convert.ToInt32(fileSize)),
+                "file", File.Name);
+
+            if (e.File.ContentType == "application/pdf")
+            {
+                await _azureStorageService.FileUpload(content, Code);
+                ImgUrl = @"/images/PDF.png";
+            }
+            else
+            {
+                ImgUrl = await _azureStorageService.FileUpload(content, Code);
+            }
             filesList = await _azureStorageService.GetContainerFileList("upload-container", Code);
         }
     }

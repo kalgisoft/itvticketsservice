@@ -33,9 +33,17 @@ namespace ItvTicketsService.Client.Services
             string imgUrl = string.Empty;
             try
             {
+                HttpRequestMessage request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri("api/Image/upload",UriKind.Relative),
+                    Content = content,
+                };
+                request.Headers.Add("folder", folder);
                 _httpClient.DefaultRequestHeaders.Add("folder", folder);
-                var response = await _httpClient.PostAsync("api/Image/upload", content);
-                imgUrl = await response.Content.ReadAsStringAsync();
+                HttpResponseMessage result = await _httpClient.SendAsync(request);
+                //var response = await _httpClient.PostAsync("api/Image/upload", content);
+                imgUrl = await result.Content.ReadAsStringAsync();
             }
             catch(Exception ex)
             {

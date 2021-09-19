@@ -41,14 +41,14 @@
                                     {
                                         <MudTd DataLabel="Image" >
                                             <a href="@context" target="_blank">
-                                                <img src="@GetImage(context)" class="image-preview" width="60" height="100" />
+                                                <img src="@GetImage(context)" class="img-preview" width="60" height="100" />
                                             </a>
                                         </MudTd>
                                     }
                                     else
                                     {
                                         <MudTd DataLabel="Image" @onclick="(() => OpenDialog(context))">
-                                            <img src="@GetImage(context)" class="image-preview" width="60" height="100" />
+                                            <img src="@GetImage(context)" class="img-preview" width="60" height="100" />
                                         </MudTd>
                                     }
 

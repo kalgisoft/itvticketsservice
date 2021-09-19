@@ -563,11 +563,19 @@ pre {
     .container-sm, .container {
         max-width: 540px;
     }
+
+    .grid-cols-1-sm {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
 }
 
 @media (min-width: 768px) {
     .container-md, .container-sm, .container {
         max-width: 720px;
+    }
+
+    grid-cols-2-md {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -575,11 +583,27 @@ pre {
     .container-lg, .container-md, .container-sm, .container {
         max-width: 960px;
     }
+
+    .grid-cols-3-lg {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-cols-4-lg {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
 }
 
 @media (min-width: 1200px) {
     .container-xl, .container-lg, .container-md, .container-sm, .container {
         max-width: 1140px;
+    }
+
+    .grid-cols-3-xl {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-cols-4-xl {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }
 
@@ -10914,13 +10938,94 @@ body {
 
     .createuserlink a {
         color: #212529;
-        text-decoration:underline;
+        text-decoration: underline;
     }
+
 .image-preview {
     float: left;
     width: 150px;
     height: 250px;
 }
-.image-preview:hover {
+
+    .image-preview:hover {
+        transform: scale(1.10)
+    }
+
+.grid {
+    display: grid;
+}
+
+.grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+
+
+
+
+
+
+
+
+.m-6 {
+    margin: 1.5rem;
+}
+
+.w-full {
+    width: 210px;
+}
+
+.h-48 {
+    height: 350px;
+}
+
+
+element.style {
+}
+
+.rounded {
+    border-radius: var(--mud-default-borderradius) !important;
+}
+
+.m-6 {
+    margin: 1.5rem;
+}
+
+.img-preview {
+    float: left;
+    width: 210px;
+    height: 400px;
+}
+
+.img-preview:hover {
     transform: scale(1.10)
 }
+
+
+/*.object-cover {
+    -o-object-fit: cover;
+    object-fit: cover;
+}*/
+
+.p-6 {
+    padding: 1.5rem;
+}
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.leading-tight {
+    line-height: 1.25;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+}
+
+/*.p-2 {
+    padding: 0.5rem;
+}*/
+

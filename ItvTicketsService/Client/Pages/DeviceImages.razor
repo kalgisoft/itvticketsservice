@@ -1,93 +1,82 @@
 ﻿@page "/deviceimages/{Code}"
 
-@inject IDeviceImagesService _deviceImagesService
-
+@inject IAzureStorageService _azureStorageService
+@inject IDialogService DialogService
 @using System.IO;
 
-<h3>DeviceImages</h3>
+<div class="container-height">
+    <div class="col-sm-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table mr-1"></i>
+                Device Images
+            </div>
+            <div class="card-body">
+                <a href="/" class="px-5"><span class="oi oi-home px-1"></span>Home</a>
+                <div class=" grid grid-cols-4 grid-cols-1-sm grid-cols-2-md grid-cols-4-lg grid-cols-4-xl">
+                    @foreach (var image in filesList)
+                    {
+                        <div class="image-container img-preview m-6 rounded overflow-hidden shadow-lg"
+                             style="text-align:center">
+                            @if (image.IndexOf(".pdf") > 0)
+                            {
+                                <a href="@image" target="_blank">
+                                    <img class="w-full h-48 object-cover p-3" src="@GetImage(image)" alt="@Path.GetFileName(image)" />
+                                </a>
+                            }
+                            else
+                            {
+                                <div @onclick="(() => OpenDialog(image))">
+                                    <img class="w-full h-48 object-cover" src="@GetImage(image)" alt="@Path.GetFileName(image)" />
+                                </div>
+                            }
 
-<a href="/"><span class="oi oi-plus"></span>Home</a>
-
-<div class="row">
-    <div class="col-md-3">
-        <h2>File List</h2>
-        <br />
-        @if (filesList != null && filesList.Count > 0)
-        {
-            int n = 0;
-            @foreach (string file in filesList)
-            {
-                n++;
-
-                <br />
-                <span>@n.</span>
-                <span @onclick="@(e=>ReadFile(file))" style="cursor:pointer; text-decoration:underline;color:blue">@file</span>
-            }
-        }
-    </div>
-
-    <div class="col-md-9">
-        <h1>Image Name: @imageName</h1>
-        <div>
-            @if (!string.IsNullOrEmpty(stringImage))
-            {
-                <img src= "data:image/png;base64,@stringImage" />
-            }
+                            <div class="">
+                                <h3 class="mt-1 font-semibold text-2xl leading-tight truncate">
+                                    @Path.GetFileName(image)
+                                </h3>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </div>
-
-
+<footer class="py-4 bg-light mt-auto">
+    <div class="container-fluid">
+        <div class="d-flex align-items-center justify-content-between small">
+            <div class="text-muted">Sync: online/offline</div>
+        </div>
+    </div>
+</footer>
 @code {
     [Parameter]
     public string Code { get; set; }
 
-    string img = string.Empty;
-    string imageName = string.Empty;
-
-    string stringImage = string.Empty;
-
     List<string> filesList = new List<string>();
-
-    string path1 = @"images/devices/";
 
     //Executes on page open, set defaults on page.
     protected override async Task OnInitializedAsync()
     {
-        filesList = await _deviceImagesService.DeviceImages(Code);
-
-        //stringImage = await _deviceImagesService.GetImageBytes(Code, "0052_0_0.png");
+        filesList = await _azureStorageService.GetContainerFileList("upload-container", Code);
     }
 
+    [Parameter]
+    public string ImageDetails { get; set; }
 
-    public async Task<string> ReadFile(string filename)
+    private async void OpenDialog(string path)
     {
-        imageName = Path.GetFileName(filename);
+        var parameters = new DialogParameters { { "ImageDetails", path } };
+        DialogService.Show<ImageDialog>("Preview", parameters);
+    }
 
-        byte[] bytes = await _deviceImagesService.GetImageBytes(Code, imageName);
-
-        stringImage = Convert.ToBase64String(bytes);
-        int k = 0;
-
-        /*
-        HttpResponseMessage rsp = await _deviceImagesService.GetImageBytes(Code, imageName);
-        //stringImage = await _deviceImagesService.GetImageBytes(Code, imageName);
-
-        if (rsp.IsSuccessStatusCode)
+    private string GetImage(string filepath)
+    {
+        if (filepath.IndexOf(".pdf") > 0)
         {
-            byte[] bytes = await rsp.Content.ReadAsByteArrayAsync();
-            int bl = bytes.Length;
-            stringImage = Convert.ToBase64String(bytes);
-
-            //stringImage = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
-
-            //string theStr = await rsp.Content.ReadAsStringAsync();
-            //stringImage = theStr.Replace("\"", string.Empty);
+            return @"/images/PDF.png";
         }
-        */
-
-
-        //<img src="@img" style="width:400px;height:400px" />
-        return stringImage;
+        return filepath;
     }
 }

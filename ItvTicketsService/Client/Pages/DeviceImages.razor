@@ -18,19 +18,9 @@
                     {
                         <div class="image-container img-preview m-6 rounded overflow-hidden shadow-lg"
                              style="text-align:center">
-                            @if (image.IndexOf(".pdf") > 0)
-                            {
-                                <a href="@image" target="_blank">
-                                    <img class="w-full h-48 object-cover p-3" src="@GetImage(image)" alt="@Path.GetFileName(image)" />
-                                </a>
-                            }
-                            else
-                            {
-                                <div @onclick="(() => OpenDialog(image))">
-                                    <img class="w-full h-48 object-cover" src="@GetImage(image)" alt="@Path.GetFileName(image)" />
-                                </div>
-                            }
-
+                            <div @onclick="(() => OpenDialog(image))">
+                                <img class="w-full h-48 object-cover" src="@GetImage(image)" alt="@Path.GetFileName(image)" />
+                            </div>
                             <div class="">
                                 <h3 class="mt-1 font-semibold text-2xl leading-tight truncate">
                                     @Path.GetFileName(image)
@@ -62,13 +52,19 @@
         filesList = await _azureStorageService.GetContainerFileList("upload-container", Code);
     }
 
-    [Parameter]
-    public string ImageDetails { get; set; }
-
     private async void OpenDialog(string path)
     {
-        var parameters = new DialogParameters { { "ImageDetails", path } };
-        DialogService.Show<ImageDialog>("Preview", parameters);
+        if (path.IndexOf(".pdf") > 0)
+        {
+            var parameters = new DialogParameters { { "Path", path }, { "Type", "pdf" } };
+            DialogOptions fullScreen = new DialogOptions() { FullScreen = true, CloseButton = true };
+            DialogService.Show<ImageDialog>("Preview", parameters, fullScreen);
+        }
+        else
+        {
+            var parameters = new DialogParameters { { "Path", path }, { "Type", "image" } };
+            DialogService.Show<ImageDialog>("Preview", parameters);
+        }
     }
 
     private string GetImage(string filepath)

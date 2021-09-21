@@ -37,22 +37,9 @@
                                     <MudTh>Delete</MudTh>
                                 </HeaderContent>
                                 <RowTemplate>
-                                    @if (context.IndexOf(".pdf") > 0)
-                                    {
-                                        <MudTd DataLabel="Image" >
-                                            <a href="@context" target="_blank">
-                                                <img src="@GetImage(context)" class="img-preview" width="60" height="100" />
-                                            </a>
-                                        </MudTd>
-                                    }
-                                    else
-                                    {
-                                        <MudTd DataLabel="Image" @onclick="(() => OpenDialog(context))">
-                                            <img src="@GetImage(context)" class="img-preview" width="60" height="100" />
-                                        </MudTd>
-                                    }
-
-
+                                    <MudTd DataLabel="Image" @onclick="(() => OpenDialog(context))">
+                                        <img src="@GetImage(context)" class="img-preview" width="60" height="100" />
+                                    </MudTd>
                                     <MudTd DataLabel="File">@Path.GetFileName(context)</MudTd>
                                     <MudTd DataLabel="Delete">
                                         <MudButton @onclick="@(() => DeleteImageAsync(context))" Variant="Variant.Filled" Color="Color.Error">Delete</MudButton>
@@ -67,11 +54,11 @@
     </div>
 </div>
 @code {
-        [Inject]
-        public HttpClient httpClient { get; set; }
+    [Inject]
+    public HttpClient httpClient { get; set; }
 
-        [Parameter]
-        public string Code { get; set; }
+    [Parameter]
+    public string Code { get; set; }
 
     public string ImgUrl { get; set; }
 
@@ -157,12 +144,19 @@
         }
     }
 
-    [Parameter]
-    public string ImageDetails { get; set; }
-
     private async void OpenDialog(string path)
     {
-        var parameters = new DialogParameters { { "ImageDetails", path } };
-        DialogService.Show<ImageDialog>("Preview", parameters);
+
+        if (path.IndexOf(".pdf") > 0)
+        {
+            var parameters = new DialogParameters { { "Path", path }, { "Type", "pdf" } };
+            DialogOptions fullScreen = new DialogOptions() { FullScreen = true, CloseButton = true };
+            DialogService.Show<ImageDialog>("Preview", parameters, fullScreen);
+        }
+        else
+        {
+            var parameters = new DialogParameters { { "Path", path }, { "Type", "image" } };
+            DialogService.Show<ImageDialog>("Preview", parameters);
+        }
     }
 }

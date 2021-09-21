@@ -1,20 +1,30 @@
 ﻿<MudDialog>
-
     <DialogContent>
-        <MudContainer Style="max-height: 500px; overflow-y: scroll">
-            <img src="@ImageDetails" />
-        </MudContainer>
+        @if (Type == "image")
+        {
+            <MudContainer Style="max-height: 500px; overflow-y: scroll">
+                <img src="@Path" />
+            </MudContainer>
+        }
+        else
+        {
+            <embed src="https://drive.google.com/viewerng/viewer?embedded=true&url=@Path" style="width:100%;height:90vh;" />
+        }
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        @if (Type == "image")
+        {
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        }
     </DialogActions>
 </MudDialog>
 
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public string ImageDetails { get; set; }
+    [Parameter] public string Path { get; set; }
+    [Parameter] public string Type { get; set; }
 
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
